@@ -1,0 +1,545 @@
+/* ====================================================================
+   TrafStat — administrator shell, sidebar, topbar, login, dashboard
+   ==================================================================== */
+
+:root {
+    --admin-sidebar-width: 260px;
+    --admin-topbar-height: 64px;
+}
+
+/* ---------------------------------------------------------------------
+   Shell layout
+   --------------------------------------------------------------------- */
+.admin-shell {
+    display: flex;
+    min-height: 100vh;
+}
+.admin-main {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+.admin-content {
+    padding: 1.5rem;
+    flex: 1 1 auto;
+}
+
+/* ---------------------------------------------------------------------
+   Sidebar
+   --------------------------------------------------------------------- */
+.admin-sidebar {
+    width: var(--admin-sidebar-width);
+    background: var(--traf-charcoal);
+    color: #E5E7EB;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+    flex-shrink: 0;
+    z-index: 1040;
+}
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.15rem 1.25rem;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.sidebar-brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--traf-orange);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 10px rgba(249,115,22,.35);
+}
+.sidebar-brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+.sidebar-brand-name { font-weight: 700; color: #fff; letter-spacing: .01em; }
+.sidebar-brand-sub  { font-size: 0.72rem; color: #9CA3AF; text-transform: uppercase; letter-spacing: .08em; margin-top: 2px; }
+
+.sidebar-nav { padding: 1rem 0.75rem; flex: 1 1 auto; }
+.sidebar-group-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: #6B7280;
+    padding: 1rem 0.75rem 0.5rem;
+    font-weight: 600;
+}
+.sidebar-list { list-style: none; margin: 0; padding: 0; }
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.62rem 0.75rem;
+    border-radius: var(--traf-radius);
+    color: #D1D5DB;
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 500;
+    transition: background .12s ease, color .12s ease;
+}
+.sidebar-link:hover { background: rgba(255,255,255,.06); color: #fff; }
+.sidebar-link.is-active {
+    background: var(--traf-orange);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(249,115,22,.35);
+}
+.sidebar-link i { font-size: 1.05rem; width: 1.25rem; text-align: center; }
+.sidebar-footer {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid rgba(255,255,255,.08);
+    color: #6B7280;
+}
+
+/* Mobile drawer */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    z-index: 1030;
+}
+.sidebar-overlay.is-open { display: block; }
+
+@media (max-width: 991.98px) {
+    .admin-sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        height: 100vh;
+        transform: translateX(-100%);
+        transition: transform .2s ease;
+        box-shadow: 0 8px 24px rgba(0,0,0,.35);
+    }
+    .admin-sidebar.is-open { transform: translateX(0); }
+}
+
+/* ---------------------------------------------------------------------
+   Topbar
+   --------------------------------------------------------------------- */
+.admin-topbar {
+    height: var(--admin-topbar-height);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0 1.5rem;
+    background: var(--traf-white);
+    border-bottom: 1px solid var(--traf-gray-border);
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+}
+.topbar-toggle {
+    display: none;
+    border: 1px solid var(--traf-gray-border);
+    background: #fff;
+    border-radius: var(--traf-radius);
+    width: 40px;
+    height: 40px;
+    font-size: 1.35rem;
+    color: var(--traf-charcoal);
+}
+@media (max-width: 991.98px) {
+    .topbar-toggle { display: inline-flex; align-items: center; justify-content: center; }
+    .admin-topbar  { padding: 0 1rem; }
+    .admin-content { padding: 1rem; }
+}
+.topbar-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--traf-charcoal);
+    flex: 1 1 auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.topbar-account-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    background: transparent;
+    border: 1px solid var(--traf-gray-border);
+    border-radius: var(--traf-radius);
+    padding: 0.35rem 0.65rem;
+    color: var(--traf-charcoal);
+    transition: background .12s ease;
+}
+.topbar-account-btn:hover { background: var(--traf-orange-light); }
+.topbar-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--traf-orange);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+.topbar-account-info { display: none; flex-direction: column; line-height: 1.05; text-align: left; }
+@media (min-width: 576px) { .topbar-account-info { display: flex; } }
+.topbar-account-name { font-size: 0.88rem; font-weight: 600; }
+.topbar-account-role { font-size: 0.72rem; color: var(--traf-gray-text); }
+
+.dropdown-item-form { margin: 0; padding: 0; }
+.dropdown-item-form .dropdown-item {
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+}
+
+/* ---------------------------------------------------------------------
+   Dashboard stat cards
+   --------------------------------------------------------------------- */
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.stat-card {
+    background: #fff;
+    border: 1px solid var(--traf-gray-border);
+    border-radius: var(--traf-radius-lg);
+    padding: 1.15rem 1.25rem;
+    box-shadow: var(--traf-shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.stat-card-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    background: var(--traf-orange-light);
+    color: var(--traf-orange-dark);
+    flex-shrink: 0;
+}
+.stat-card-value {
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: var(--traf-charcoal);
+    line-height: 1.1;
+}
+.stat-card-label {
+    font-size: 0.82rem;
+    color: var(--traf-gray-text);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+}
+
+/* ---------------------------------------------------------------------
+   Auth pages (login, change password)
+   --------------------------------------------------------------------- */
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    background:
+        radial-gradient(circle at 15% 15%, rgba(249,115,22,.12), transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(234,88,12,.10), transparent 45%),
+        var(--traf-gray-bg);
+}
+.auth-card {
+    background: #fff;
+    border-radius: var(--traf-radius-lg);
+    box-shadow: var(--traf-shadow-md);
+    border: 1px solid var(--traf-gray-border);
+    width: 100%;
+    max-width: 440px;
+    padding: 2.2rem 2rem;
+}
+.auth-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+.auth-brand-mark {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    background: var(--traf-orange);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    box-shadow: 0 6px 14px rgba(249,115,22,.35);
+}
+.auth-brand-name { font-weight: 700; color: var(--traf-charcoal); font-size: 1.15rem; }
+.auth-brand-sub  { font-size: 0.75rem; color: var(--traf-gray-text); text-transform: uppercase; letter-spacing: .08em; }
+
+.auth-title { font-size: 1.25rem; font-weight: 600; margin: 0 0 .25rem; color: var(--traf-charcoal); }
+.auth-subtitle { color: var(--traf-gray-text); font-size: 0.9rem; margin: 0 0 1.5rem; }
+
+.auth-footer { margin-top: 1.5rem; text-align: center; font-size: 0.8rem; color: var(--traf-gray-text); }
+
+/* Show-password toggle inside input */
+.password-wrap { position: relative; }
+.password-wrap .form-control { padding-right: 2.75rem; }
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 0.5rem;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    color: var(--traf-gray-text);
+    padding: 0.25rem;
+    cursor: pointer;
+    font-size: 1.05rem;
+}
+.password-toggle:hover { color: var(--traf-charcoal); }
+
+/* ---------------------------------------------------------------------
+   Charts
+   --------------------------------------------------------------------- */
+.chart-card       { height: 100%; }
+.chart-card-body  {
+    position: relative;
+    height: 300px;
+    padding: 1rem 1.25rem;
+}
+.chart-card-body canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+@media (max-width: 576px) {
+    .chart-card-body { height: 240px; }
+}
+.chart-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--traf-gray-text);
+    font-size: 0.9rem;
+}
+
+/* ---------------------------------------------------------------------
+   Violation history — timeline list
+   --------------------------------------------------------------------- */
+.history-timeline { list-style: none; padding-left: 0; margin: 0; }
+.history-timeline > li {
+    position: relative;
+    padding: 1rem 0 1rem 2rem;
+    border-left: 2px solid var(--traf-gray-border);
+    margin-left: 0.75rem;
+}
+.history-timeline > li::before {
+    content: '';
+    position: absolute;
+    left: -0.55rem;
+    top: 1.15rem;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background: var(--traf-orange);
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 1px var(--traf-gray-border);
+}
+.history-timeline > li:last-child { border-left-color: transparent; }
+
+/* ---------------------------------------------------------------------
+   Repeat indicator badge
+   --------------------------------------------------------------------- */
+.badge-repeat {
+    background: #FEF3C7;
+    color: #92400E;
+    border: 1px solid #FCD34D;
+    font-weight: 600;
+}
+
+/* ---------------------------------------------------------------------
+   Hotspot map
+   --------------------------------------------------------------------- */
+#hotspotMap {
+    height: 560px;
+    width: 100%;
+    border-radius: var(--traf-radius);
+    border: 1px solid var(--traf-gray-border);
+    z-index: 1;
+}
+@media (max-width: 767.98px) {
+    #hotspotMap { height: 400px; }
+}
+
+/* Marker cluster overrides — keep the orange palette */
+.marker-cluster-small,
+.marker-cluster-medium,
+.marker-cluster-large {
+    background-color: rgba(249, 115, 22, 0.25) !important;
+}
+.marker-cluster-small div,
+.marker-cluster-medium div,
+.marker-cluster-large div {
+    background-color: #F97316 !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+}
+
+/* Individual marker — orange disc, white border */
+.trafstat-marker-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #F97316;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+.trafstat-marker-dot:hover {
+    background: #EA580C;
+}
+
+.leaflet-popup-content {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin: 0.75rem 1rem;
+}
+.leaflet-popup-content h6 {
+    margin: 0 0 0.35rem;
+    color: #1F2937;
+    font-weight: 600;
+}
+.leaflet-popup-content dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 0.5rem;
+    row-gap: 0.15rem;
+}
+.leaflet-popup-content dt {
+    color: #6B7280;
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+.leaflet-popup-content dd {
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+/* ---------------------------------------------------------------------
+   Print view — clean layout when ?print=1 is passed to reports.php
+   --------------------------------------------------------------------- */
+@media print {
+    @page { size: A4 landscape; margin: 1cm; }
+
+    body {
+        background: #fff !important;
+        color: #000 !important;
+        font-size: 10pt;
+    }
+
+    .no-print { display: none !important; }
+
+    .print-header {
+        border-bottom: 2px solid #1F2937;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    .print-header h1 {
+        margin: 0;
+        font-size: 16pt;
+        color: #1F2937;
+    }
+    .print-header .print-meta {
+        font-size: 9pt;
+        color: #4B5563;
+        margin-top: 0.25rem;
+    }
+
+    table.print-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 9pt;
+    }
+    table.print-table thead {
+        display: table-header-group;
+    }
+    table.print-table th,
+    table.print-table td {
+        border: 1px solid #D1D5DB;
+        padding: 4px 6px;
+        text-align: left;
+        vertical-align: top;
+    }
+    table.print-table th {
+        background: #F3F4F6 !important;
+        font-weight: 600;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    table.print-table tr { page-break-inside: avoid; }
+
+    .print-footer {
+        margin-top: 1rem;
+        font-size: 8pt;
+        color: #6B7280;
+        text-align: center;
+    }
+}
+
+/* Screen preview of the print layout, when user opens ?print=1 */
+.print-view {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: var(--traf-radius);
+    border: 1px solid var(--traf-gray-border);
+}
+.print-view .print-header {
+    border-bottom: 2px solid var(--traf-charcoal);
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+.print-view .print-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--traf-charcoal);
+}
+.print-view .print-header .print-meta {
+    font-size: 0.85rem;
+    color: var(--traf-gray-text);
+    margin-top: 0.25rem;
+}
+.print-view table.print-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+.print-view table.print-table th,
+.print-view table.print-table td {
+    border: 1px solid var(--traf-gray-border);
+    padding: 0.4rem 0.55rem;
+    text-align: left;
+    vertical-align: top;
+}
+.print-view table.print-table th {
+    background: var(--traf-gray-bg);
+    font-weight: 600;
+}
+.print-view .print-footer {
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    color: var(--traf-gray-text);
+    text-align: center;
+}
