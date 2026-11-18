@@ -6,11 +6,11 @@
  */
 
 // ---- Database -------------------------------------------------------
-define('DB_HOST', '127.0.0.1');
+define('DB_HOST', 'mysql://${{MYSQLUSER}}:${{MYSQLPASSWORD}}@${{RAILWAY_TCP_PROXY_DOMAIN}}:${{RAILWAY_TCP_PROXY_PORT}}/${{MYSQLDATABASE}}');
 define('DB_PORT', '3306');
-define('DB_NAME', 'trafstat_db');
-define('DB_USER', 'trafstat_user');
-define('DB_PASS', 'goldirec098');
+define('DB_NAME', 'railway');
+define('DB_USER', 'root');
+define('DB_PASS', 'KVZiCiptvEjBjgqnLxCzZVXdHIDjdcpz');
 
 // ---- Application ----------------------------------------------------
 define('APP_ENV', 'development');                 // 'development' | 'production'
