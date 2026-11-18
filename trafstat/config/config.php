@@ -13,8 +13,23 @@ define('DB_USER', 'root');
 define('DB_PASS', 'ryxXuOlooAgAazkdjhTluqfVEePNtSph');
 
 // ---- Application ----------------------------------------------------
-define('APP_ENV', 'development');                 // 'development' | 'production'
-define('APP_URL', 'http://localhost/trafstat');   // no trailing slash
+define('APP_ENV', 'development'); // 'development' | 'production'
+
+$httpHost = $_SERVER['HTTP_HOST'] ?? 'localhost';
+if (!preg_match('/\A(?:[a-z0-9.-]+|\[[0-9a-f:]+\])(?::[0-9]{1,5})?\z/iD', $httpHost)) {
+    throw new RuntimeException('Invalid HTTP host.');
+}
+
+$hostName = strtolower(preg_replace('/:[0-9]+\z/', '', $httpHost) ?? $httpHost);
+$forwardedProto = strtolower(trim(explode(',', $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')[0]));
+$scheme = in_array($forwardedProto, ['http', 'https'], true)
+    ? $forwardedProto
+    : ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http');
+$basePath = in_array($hostName, ['localhost', '127.0.0.1', '[::1]'], true)
+    ? '/trafstat'
+    : '';
+
+define('APP_URL', $scheme . '://' . $httpHost . $basePath);
 define('APP_TIMEZONE', 'Asia/Manila');
 define('APP_NAME', 'TrafStat');
 
