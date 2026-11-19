@@ -22,6 +22,7 @@ $currentPage = $currentPage ?? 'dashboard';
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
     <title><?= e($pageTitle) ?> — <?= e(APP_NAME) ?></title>
+    <link rel="icon" type="image/svg+xml" href="<?= e(url('assets/images/favicon.svg')) ?>">
 
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
@@ -29,6 +30,9 @@ $currentPage = $currentPage ?? 'dashboard';
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="<?= e(url('assets/css/style.css')) ?>">
     <link rel="stylesheet" href="<?= e(url('assets/css/admin.css')) ?>">
+    <link rel="stylesheet" href="<?= e(url('assets/css/style.css')) ?>">
+    <link rel="stylesheet" href="<?= e(url('assets/css/admin.css')) ?>">
+    <link rel="stylesheet" href="<?= e(url('assets/css/animations.css')) ?>"></body>
 </head>
 <body>
 <div class="admin-shell">
@@ -86,19 +90,3 @@ $currentPage = $currentPage ?? 'dashboard';
         </header>
 
         <div class="admin-content">
-            <?php
-            $flashes = take_flashes();
-            if (!empty($flashes)):
-                foreach ($flashes as $type => $messages):
-                    $type = in_array($type, ['success', 'error', 'warning', 'info'], true)
-                        ? $type
-                        : 'info';
-                    foreach ((array) $messages as $message): ?>
-                        <div class="alert alert-<?= e($type) ?> alert-dismissible fade show" role="alert">
-                            <?= e($message) ?>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    <?php endforeach;
-                endforeach;
-            endif;
-            ?>

@@ -24,6 +24,8 @@ require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/csrf.php';
 require_once __DIR__ . '/logger.php';
 require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/brand.php';
 
 send_security_headers();
 start_secure_session();
+

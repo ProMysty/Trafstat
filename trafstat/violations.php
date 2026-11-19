@@ -33,7 +33,7 @@ require __DIR__ . '/includes/public_header.php';
 
 <section class="public-section">
     <?php if (empty($publicCategories)): ?>
-        <div class="public-empty">
+        <div class="public-empty" data-reveal>
             <i class="bi bi-tags"></i>
             <h3 style="font-size:1rem;font-weight:600;color:var(--traf-charcoal);margin:0.5rem 0;">
                 No categories have been published yet
@@ -44,16 +44,16 @@ require __DIR__ . '/includes/public_header.php';
             </p>
         </div>
     <?php else: ?>
-        <div class="public-category-list">
+        <div class="public-category-list" data-reveal-stagger>
             <?php foreach ($publicCategories as $c): ?>
-                <div class="public-category-card">
+                <div class="public-category-card" data-reveal>
                     <h3><?= e($c['violation_name']) ?></h3>
                     <p><?= e($c['public_description']) ?></p>
                 </div>
             <?php endforeach; ?>
         </div>
 
-        <div class="public-notice mt-4">
+        <div class="public-notice mt-4" data-reveal>
             <i class="bi bi-info-circle me-1"></i>
             This page describes violation categories only. Specific incidents
             and violator information are not published.

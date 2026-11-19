@@ -1,69 +1,157 @@
 /* ====================================================================
-   TrafStat — shared design system
-   Palette: #F97316 orange, #EA580C dark orange, #FFF7ED light orange,
-            #1F2937 charcoal, #F3F4F6 page background
+   TrafStat — design system v2
+   Shared by admin and public. Motion variables consumed by Module 10.
    ==================================================================== */
 
 :root {
+    /* ---- Brand palette (unchanged hues, extended depth) ---------- */
     --traf-orange:        #F97316;
+    --traf-orange-soft:   #FB923C;
     --traf-orange-dark:   #EA580C;
+    --traf-orange-deep:   #C2410C;
     --traf-orange-light:  #FFF7ED;
+    --traf-orange-100:    #FFEDD5;
+
     --traf-charcoal:      #1F2937;
     --traf-charcoal-2:    #374151;
+    --traf-charcoal-3:    #4B5563;
+    --traf-ink:           #0F172A;
+
     --traf-white:         #FFFFFF;
     --traf-gray-bg:       #F3F4F6;
+    --traf-gray-50:       #F9FAFB;
     --traf-gray-border:   #E5E7EB;
+    --traf-gray-border-2: #D1D5DB;
     --traf-gray-text:     #6B7280;
-    --traf-success:       #10B981;
-    --traf-warning:       #F59E0B;
-    --traf-danger:        #DC2626;
+    --traf-gray-text-2:   #9CA3AF;
 
+    --traf-success:       #10B981;
+    --traf-success-bg:    #ECFDF5;
+    --traf-warning:       #F59E0B;
+    --traf-warning-bg:    #FFFBEB;
+    --traf-danger:        #DC2626;
+    --traf-danger-bg:     #FEF2F2;
+    --traf-info:          #3B82F6;
+    --traf-info-bg:       #EFF6FF;
+
+    /* ---- Radii --------------------------------------------------- */
+    --traf-radius-xs: 0.25rem;
     --traf-radius-sm: 0.375rem;
     --traf-radius:    0.5rem;
     --traf-radius-lg: 0.75rem;
-    --traf-shadow-sm: 0 1px 2px rgba(0,0,0,.05);
-    --traf-shadow:    0 1px 3px rgba(0,0,0,.10), 0 1px 2px rgba(0,0,0,.06);
-    --traf-shadow-md: 0 4px 10px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.05);
+    --traf-radius-xl: 1rem;
 
+    /* ---- Elevation ----------------------------------------------- */
+    --traf-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+    --traf-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06),
+                      0 1px 2px rgba(15, 23, 42, 0.04);
+    --traf-shadow:    0 2px 6px rgba(15, 23, 42, 0.08),
+                      0 1px 3px rgba(15, 23, 42, 0.06);
+    --traf-shadow-md: 0 6px 16px rgba(15, 23, 42, 0.08),
+                      0 3px 6px rgba(15, 23, 42, 0.05);
+    --traf-shadow-lg: 0 12px 28px rgba(15, 23, 42, 0.12),
+                      0 6px 12px rgba(15, 23, 42, 0.06);
+    --traf-shadow-ring: 0 0 0 3px rgba(249, 115, 22, 0.18);
+
+    /* ---- Motion — used by Module 10 animations ------------------- */
+    --traf-ease:          cubic-bezier(0.4, 0, 0.2, 1);
+    --traf-ease-out:      cubic-bezier(0, 0, 0.2, 1);
+    --traf-ease-in:       cubic-bezier(0.4, 0, 1, 1);
+    --traf-ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+    --traf-duration-75:   75ms;
+    --traf-duration-150:  150ms;
+    --traf-duration-250:  250ms;
+    --traf-duration-350:  350ms;
+    --traf-duration-500:  500ms;
+
+    /* ---- Bootstrap overrides ------------------------------------ */
     --bs-primary: #F97316;
     --bs-primary-rgb: 249, 115, 22;
     --bs-body-color: #1F2937;
     --bs-body-bg: #F3F4F6;
+    --bs-border-color: #E5E7EB;
 }
 
+/* ---- Reset / base -------------------------------------------------- */
 * { box-sizing: border-box; }
-
-html, body {
-    margin: 0;
-    padding: 0;
-}
+html, body { margin: 0; padding: 0; }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-                 "Helvetica Neue", Arial, sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                 Roboto, "Helvetica Neue", Arial, sans-serif;
     font-size: 15px;
     line-height: 1.55;
     color: var(--traf-charcoal);
     background: var(--traf-gray-bg);
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
 }
 
-/* ---------------------------------------------------------------------
-   Buttons
-   --------------------------------------------------------------------- */
-.btn { border-radius: var(--traf-radius); font-weight: 500; }
-.btn-primary {
-    --bs-btn-bg: var(--traf-orange);
-    --bs-btn-border-color: var(--traf-orange);
-    --bs-btn-hover-bg: var(--traf-orange-dark);
-    --bs-btn-hover-border-color: var(--traf-orange-dark);
-    --bs-btn-active-bg: var(--traf-orange-dark);
-    --bs-btn-active-border-color: var(--traf-orange-dark);
-    --bs-btn-focus-shadow-rgb: 249, 115, 22;
-    --bs-btn-color: #fff;
-    --bs-btn-hover-color: #fff;
-    --bs-btn-active-color: #fff;
+/* Reduce motion when the OS asks for it — accessibility, not optional. */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
+
+/* ---- Typography ---------------------------------------------------- */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--traf-ink);
+    letter-spacing: -0.01em;
+    font-weight: 600;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 1rem;
+    color: var(--traf-ink);
+    letter-spacing: -0.005em;
+}
+
+.text-muted-sm {
+    color: var(--traf-gray-text);
+    font-size: 0.85rem;
+}
+
+/* ---- Buttons ------------------------------------------------------- */
+.btn {
+    border-radius: var(--traf-radius);
+    font-weight: 500;
+    transition:
+        background-color var(--traf-duration-150) var(--traf-ease),
+        border-color    var(--traf-duration-150) var(--traf-ease),
+        color           var(--traf-duration-150) var(--traf-ease),
+        box-shadow      var(--traf-duration-150) var(--traf-ease),
+        transform       var(--traf-duration-150) var(--traf-ease);
+}
+.btn:focus-visible {
+    box-shadow: var(--traf-shadow-ring);
+    outline: none;
+}
+.btn:not(:disabled):active {
+    transform: translateY(1px);
+}
+
+.btn-primary {
+    --bs-btn-bg:               var(--traf-orange);
+    --bs-btn-border-color:     var(--traf-orange);
+    --bs-btn-hover-bg:         var(--traf-orange-dark);
+    --bs-btn-hover-border-color: var(--traf-orange-dark);
+    --bs-btn-active-bg:        var(--traf-orange-deep);
+    --bs-btn-active-border-color: var(--traf-orange-deep);
+    --bs-btn-color:            #fff;
+    --bs-btn-hover-color:      #fff;
+    --bs-btn-active-color:     #fff;
+    box-shadow: 0 1px 2px rgba(249, 115, 22, 0.25);
+}
+.btn-primary:hover {
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+
 .btn-outline-primary {
     --bs-btn-color: var(--traf-orange);
     --bs-btn-border-color: var(--traf-orange);
@@ -75,28 +163,41 @@ body {
     --bs-btn-active-color: #fff;
 }
 
-/* ---------------------------------------------------------------------
-   Forms
-   --------------------------------------------------------------------- */
-.form-control, .form-select {
+/* ---- Forms --------------------------------------------------------- */
+.form-control,
+.form-select {
     border-radius: var(--traf-radius);
     border-color: var(--traf-gray-border);
     padding: 0.55rem 0.75rem;
+    transition:
+        border-color var(--traf-duration-150) var(--traf-ease),
+        box-shadow   var(--traf-duration-150) var(--traf-ease);
 }
-.form-control:focus, .form-select:focus {
+.form-control:hover,
+.form-select:hover {
+    border-color: var(--traf-gray-border-2);
+}
+.form-control:focus,
+.form-select:focus {
     border-color: var(--traf-orange);
-    box-shadow: 0 0 0 3px rgba(249,115,22,.18);
+    box-shadow: var(--traf-shadow-ring);
 }
-.form-label { font-weight: 500; color: var(--traf-charcoal); font-size: 0.92rem; }
+.form-label {
+    font-weight: 500;
+    color: var(--traf-charcoal);
+    font-size: 0.92rem;
+}
 
-/* ---------------------------------------------------------------------
-   Cards
-   --------------------------------------------------------------------- */
+/* ---- Cards --------------------------------------------------------- */
 .card {
     border: 1px solid var(--traf-gray-border);
     border-radius: var(--traf-radius-lg);
     box-shadow: var(--traf-shadow-sm);
     background: var(--traf-white);
+    transition:
+        box-shadow var(--traf-duration-250) var(--traf-ease),
+        border-color var(--traf-duration-250) var(--traf-ease),
+        transform var(--traf-duration-250) var(--traf-ease);
 }
 .card-header {
     background: var(--traf-white);
@@ -105,38 +206,54 @@ body {
     font-weight: 600;
 }
 
-/* ---------------------------------------------------------------------
-   Tables
-   --------------------------------------------------------------------- */
-.table { --bs-table-bg: transparent; }
+/* ---- Tables -------------------------------------------------------- */
+.table {
+    --bs-table-bg: transparent;
+    --bs-table-hover-bg: var(--traf-orange-light);
+}
 .table > thead th {
-    background: var(--traf-gray-bg);
+    background: var(--traf-gray-50);
     color: var(--traf-charcoal);
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
     font-weight: 600;
     border-bottom: 1px solid var(--traf-gray-border);
     white-space: nowrap;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
 }
-.table > tbody > tr > td { vertical-align: middle; }
+.table > tbody > tr > td {
+    vertical-align: middle;
+    transition: background-color var(--traf-duration-150) var(--traf-ease);
+}
 
-/* ---------------------------------------------------------------------
-   Alerts
-   --------------------------------------------------------------------- */
-.alert { border-radius: var(--traf-radius); border: none; }
-.alert-success { background: #ECFDF5; color: #065F46; }
-.alert-danger  { background: #FEF2F2; color: #991B1B; }
-.alert-warning { background: #FFFBEB; color: #92400E; }
-.alert-info    { background: #EFF6FF; color: #1E40AF; }
+/* ---- Alerts -------------------------------------------------------- */
+.alert {
+    border-radius: var(--traf-radius);
+    border: none;
+    padding: 0.85rem 1rem;
+    font-size: 0.92rem;
+}
+.alert-success { background: var(--traf-success-bg); color: #065F46; }
+.alert-danger  { background: var(--traf-danger-bg);  color: #991B1B; }
+.alert-warning { background: var(--traf-warning-bg); color: #92400E; }
+.alert-info    { background: var(--traf-info-bg);    color: #1E40AF; }
 
-/* ---------------------------------------------------------------------
-   Utilities
-   --------------------------------------------------------------------- */
-.text-muted-sm { color: var(--traf-gray-text); font-size: 0.85rem; }
-.section-title {
-    font-size: 1.1rem;
+/* ---- Badges -------------------------------------------------------- */
+.badge {
     font-weight: 600;
-    margin: 0 0 1rem;
-    color: var(--traf-charcoal);
+    letter-spacing: 0.02em;
+    padding: 0.35em 0.7em;
+    border-radius: 6px;
+}
+
+/* ---- Utilities ----------------------------------------------------- */
+.font-monospace { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+code {
+    color: var(--traf-orange-dark);
+    background: var(--traf-orange-light);
+    padding: 0.12em 0.4em;
+    border-radius: 4px;
+    font-size: 0.9em;
 }

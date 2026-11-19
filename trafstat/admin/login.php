@@ -63,7 +63,7 @@ $flashes = take_flashes();
     <div class="auth-card">
 
         <div class="auth-brand">
-            <span class="auth-brand-mark">T</span>
+            <?= trafstat_mark('auth-brand-mark', 48, false) ?>
             <div>
                 <div class="auth-brand-name"><?= e(APP_NAME) ?></div>
                 <div class="auth-brand-sub">Administration</div>

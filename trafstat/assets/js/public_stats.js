@@ -1,29 +1,45 @@
 /* ====================================================================
-   TrafStat — public statistics charts
-   Reads window.PUBLIC_STATS and renders three Chart.js canvases.
+   TrafStat — public statistics charts (mobile-aware)
+   Uses TrafChart helpers from chart-utils.js.
    Null-valued buckets create visible gaps (below suppression threshold).
    ==================================================================== */
 (function () {
     'use strict';
 
+    var charts = { monthly: null, category: null, yearly: null };
+
     document.addEventListener('DOMContentLoaded', function () {
-        if (typeof Chart === 'undefined') { return; }
-        var stats = window.PUBLIC_STATS || {};
+        if (typeof Chart === 'undefined' || typeof TrafChart === 'undefined') {
+            return;
+        }
 
         Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
         Chart.defaults.color        = '#6B7280';
         Chart.defaults.borderColor  = '#E5E7EB';
 
+        buildCharts();
+
+        TrafChart.onChangeBreakpoint(function () {
+            Object.keys(charts).forEach(function (key) {
+                if (charts[key]) {
+                    charts[key].destroy();
+                    charts[key] = null;
+                }
+            });
+            buildCharts();
+        });
+    });
+
+    function buildCharts() {
+        var stats = window.PUBLIC_STATS || {};
         var ORANGE = '#F97316';
         var ORANGE_LIGHT = 'rgba(249,115,22,0.15)';
         var CHARCOAL = '#1F2937';
-        var PALETTE = ['#F97316','#EA580C','#FB923C','#FDBA74','#FED7AA',
-                       '#F59E0B','#FBBF24','#FCD34D','#1F2937','#6B7280'];
 
-        /* Monthly */
+        /* ---- Monthly line ----------------------------------------- */
         var monthlyEl = document.getElementById('publicMonthly');
         if (monthlyEl && stats.monthly) {
-            new Chart(monthlyEl, {
+            charts.monthly = new Chart(monthlyEl, {
                 type: 'line',
                 data: {
                     labels: stats.monthly.labels,
@@ -34,71 +50,46 @@
                         backgroundColor: ORANGE_LIGHT,
                         fill: true,
                         tension: 0.3,
-                        pointRadius: 4,
+                        spanGaps: false,
+                        pointRadius: TrafChart.isMobile() ? 3 : 4,
+                        pointHoverRadius: TrafChart.isMobile() ? 6 : 5,
+                        pointHitRadius: TrafChart.isMobile() ? 18 : 10,
                         pointBackgroundColor: ORANGE,
                         pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
-                        spanGaps: false
+                        pointBorderWidth: 2
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            intersect: false,
-                            mode: 'index',
-                            callbacks: {
-                                label: function (ctx) {
-                                    if (ctx.parsed.y === null || ctx.parsed.y === undefined) {
-                                        return 'Below reporting threshold';
-                                    }
-                                    return ctx.parsed.y + ' apprehended';
+                options: TrafChart.lineOptions({
+                    showLegend: false,
+                    tooltip: {
+                        callbacks: {
+                            label: function (ctx) {
+                                if (ctx.parsed.y === null || ctx.parsed.y === undefined) {
+                                    return 'Below reporting threshold';
                                 }
+                                return ctx.parsed.y + ' apprehended';
                             }
                         }
-                    },
-                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
-                }
+                    }
+                })
             });
+            if (window.trafHideSkeleton) { window.trafHideSkeleton(monthlyEl); }
         }
 
-        /* Categories */
+        /* ---- Category — doughnut or bar depending on viewport ----- */
         var categoryEl = document.getElementById('publicCategories');
-        if (categoryEl && stats.category) {
-            var bg = stats.category.labels.map(function (_, i) {
-                return PALETTE[i % PALETTE.length];
+        if (categoryEl && stats.category && stats.category.labels.length > 0) {
+            charts.category = TrafChart.renderCategoryChart('publicCategories', {
+                labels: stats.category.labels,
+                values: stats.category.values
             });
-            new Chart(categoryEl, {
-                type: 'doughnut',
-                data: {
-                    labels: stats.category.labels,
-                    datasets: [{
-                        data: stats.category.values,
-                        backgroundColor: bg,
-                        borderWidth: 2,
-                        borderColor: '#fff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { boxWidth: 12, padding: 10, font: { size: 11 } }
-                        }
-                    },
-                    cutout: '62%'
-                }
-            });
+            if (window.trafHideSkeleton) { window.trafHideSkeleton(categoryEl); }
         }
 
-        /* Yearly */
+        /* ---- Yearly bar ------------------------------------------- */
         var yearlyEl = document.getElementById('publicYearly');
         if (yearlyEl && stats.yearly) {
-            new Chart(yearlyEl, {
+            charts.yearly = new Chart(yearlyEl, {
                 type: 'bar',
                 data: {
                     labels: stats.yearly.labels,
@@ -107,28 +98,24 @@
                         data: stats.yearly.values,
                         backgroundColor: CHARCOAL,
                         borderRadius: 6,
-                        maxBarThickness: 56
+                        maxBarThickness: TrafChart.isMobile() ? 32 : 56
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function (ctx) {
-                                    if (ctx.parsed.y === null || ctx.parsed.y === undefined) {
-                                        return 'Below reporting threshold';
-                                    }
-                                    return ctx.parsed.y + ' apprehended';
+                options: TrafChart.barOptions({
+                    showLegend: false,
+                    tooltip: {
+                        callbacks: {
+                            label: function (ctx) {
+                                if (ctx.parsed.y === null || ctx.parsed.y === undefined) {
+                                    return 'Below reporting threshold';
                                 }
+                                return ctx.parsed.y + ' apprehended';
                             }
                         }
-                    },
-                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
-                }
+                    }
+                })
             });
+            if (window.trafHideSkeleton) { window.trafHideSkeleton(yearlyEl); }
         }
-    });
+    }
 })();

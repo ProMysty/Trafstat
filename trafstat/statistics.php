@@ -5,19 +5,15 @@
  * Suppression rules:
  *   - Any bucket (month / category / year) with fewer than
  *     PUBLIC_SUPPRESSION_THRESHOLD records is treated as below-threshold.
- *   - For monthly and yearly charts, below-threshold buckets are set to null
- *     so Chart.js renders a gap (not a zero) — visually signalling "not shown".
- *   - For category breakdowns, below-threshold categories are merged into
- *     a single "Other (below threshold)" bucket whose own count is shown only
- *     if it too passes the threshold.
- *   - Total active apprehensions and total active violators are aggregated
- *     counts and are shown exactly (no small-group inference possible).
+ *   - Monthly and yearly below-threshold buckets are set to null so Chart.js
+ *     renders a gap (not a zero) — visually signalling "not shown".
+ *   - Category breakdowns merge below-threshold categories into "Other".
+ *   - Totals are aggregated counts and are shown exactly.
  */
 require_once __DIR__ . '/includes/init.php';
 
 $threshold = (int) PUBLIC_SUPPRESSION_THRESHOLD;
 
-/* Years with active data, for the year selector. */
 $availableYears = db_all(
     "SELECT DISTINCT YEAR(apprehension_date) AS y
        FROM apprehension_records
@@ -32,7 +28,6 @@ if (!$showAllYears && !in_array($selectedYear, $availableYearList, true)) {
     $selectedYear = (int) date('Y');
 }
 
-/* Aggregate totals (safe to publish exactly). */
 $totalActiveApprehensions = (int) db_value(
     "SELECT COUNT(*) FROM apprehension_records WHERE record_status = 'active'"
 );
@@ -45,12 +40,9 @@ $rangeApprehensions = (int) db_value(
     $showAllYears ? [] : [':y' => $selectedYear]
 );
 
-/* ---------------------------------------------------------------- */
-/* Monthly — only for a specific year                               */
-/* ---------------------------------------------------------------- */
+/* Monthly — only for a specific year */
 $monthlyLabels = [];
 $monthlyValues = [];
-
 if (!$showAllYears) {
     $monthlyRows = db_all(
         "SELECT MONTH(apprehension_date) AS m, COUNT(*) AS total
@@ -71,9 +63,7 @@ if (!$showAllYears) {
     }
 }
 
-/* ---------------------------------------------------------------- */
-/* Categories                                                       */
-/* ---------------------------------------------------------------- */
+/* Categories */
 $categoryRows = db_all(
     "SELECT vc.violation_name, COUNT(a.apprehension_id) AS total
        FROM violation_categories vc
@@ -85,12 +75,9 @@ $categoryRows = db_all(
    ORDER BY total DESC, vc.violation_name ASC",
     $showAllYears ? [] : [':y' => $selectedYear]
 );
-
 $categoryLabels = [];
 $categoryValues = [];
 $belowThreshold = 0;
-$belowThresholdCount = 0;
-
 foreach ($categoryRows as $r) {
     $count = (int) $r['total'];
     if ($count >= $threshold) {
@@ -98,20 +85,14 @@ foreach ($categoryRows as $r) {
         $categoryValues[] = $count;
     } else {
         $belowThreshold += $count;
-        $belowThresholdCount++;
     }
 }
-
-/* If there are multiple below-threshold categories, or even one large enough
-   to itself cross the threshold when summed, surface them as "Other". */
 if ($belowThreshold >= $threshold) {
     $categoryLabels[] = 'Other (aggregated)';
     $categoryValues[] = $belowThreshold;
 }
 
-/* ---------------------------------------------------------------- */
-/* Yearly                                                           */
-/* ---------------------------------------------------------------- */
+/* Yearly */
 $yearlyRows = db_all(
     "SELECT YEAR(apprehension_date) AS y, COUNT(*) AS total
        FROM apprehension_records
@@ -127,9 +108,7 @@ foreach ($yearlyRows as $r) {
     $yearlyValues[] = $count >= $threshold ? $count : null;
 }
 
-/* ---------------------------------------------------------------- */
-/* Most common category (only from visible ones)                    */
-/* ---------------------------------------------------------------- */
+/* Most common visible category */
 $mostCommonCategory = null;
 $highest = 0;
 foreach ($categoryRows as $r) {
@@ -171,8 +150,7 @@ require __DIR__ . '/includes/public_header.php';
 
 <section class="public-section">
 
-    <!-- Year selector -->
-    <div class="d-flex flex-wrap gap-2 align-items-center mb-4">
+    <div class="d-flex flex-wrap gap-2 align-items-center mb-4" data-reveal>
         <label class="fw-semibold">Year:</label>
         <?php if (!empty($availableYearList)): ?>
             <a href="?year=<?= (int) date('Y') ?>"
@@ -194,7 +172,7 @@ require __DIR__ . '/includes/public_header.php';
         <?php endif; ?>
     </div>
 
-    <div class="public-notice">
+    <div class="public-notice" data-reveal>
         <i class="bi bi-shield-lock me-1"></i>
         <strong>About suppression:</strong> buckets with fewer than
         <?= (int) $threshold ?> records are not shown. This prevents re-identification
@@ -202,26 +180,29 @@ require __DIR__ . '/includes/public_header.php';
         Data Protection Officer.
     </div>
 
-    <!-- Top summary cards -->
-    <div class="public-stat-grid mb-4">
-        <div class="public-stat-card">
-            <div class="public-stat-value">
+    <div class="public-stat-grid mb-4" data-reveal-stagger>
+        <div class="public-stat-card" data-reveal>
+            <div class="public-stat-value" data-count-target="<?= $rangeApprehensions ?>">
                 <?= number_format($rangeApprehensions) ?>
             </div>
             <div class="public-stat-label">
                 <?= $showAllYears ? 'Total recorded apprehensions' : 'Recorded in ' . (int) $selectedYear ?>
             </div>
         </div>
-        <div class="public-stat-card">
-            <div class="public-stat-value"><?= number_format($totalActiveViolators) ?></div>
+        <div class="public-stat-card" data-reveal>
+            <div class="public-stat-value" data-count-target="<?= $totalActiveViolators ?>">
+                <?= number_format($totalActiveViolators) ?>
+            </div>
             <div class="public-stat-label">Active violators (all years)</div>
         </div>
-        <div class="public-stat-card">
-            <div class="public-stat-value"><?= number_format($totalActiveApprehensions) ?></div>
+        <div class="public-stat-card" data-reveal>
+            <div class="public-stat-value" data-count-target="<?= $totalActiveApprehensions ?>">
+                <?= number_format($totalActiveApprehensions) ?>
+            </div>
             <div class="public-stat-label">Total apprehensions (all years)</div>
         </div>
         <?php if ($mostCommonCategory !== null): ?>
-            <div class="public-stat-card">
+            <div class="public-stat-card" data-reveal>
                 <div class="public-stat-value" style="font-size:1rem;line-height:1.3;">
                     <?= e($mostCommonCategory) ?>
                 </div>
@@ -230,9 +211,8 @@ require __DIR__ . '/includes/public_header.php';
         <?php endif; ?>
     </div>
 
-    <!-- Charts -->
     <?php if (!$showAllYears): ?>
-        <div class="public-chart-card">
+        <div class="public-chart-card" data-reveal>
             <h3>Monthly trend &mdash; <?= (int) $selectedYear ?></h3>
             <?php if (array_sum(array_map(fn($v) => $v === null ? 0 : $v, $monthlyValues)) === 0): ?>
                 <div class="public-empty">
@@ -241,6 +221,7 @@ require __DIR__ . '/includes/public_header.php';
                 </div>
             <?php else: ?>
                 <div class="public-chart-container">
+                    <div class="chart-skeleton" aria-hidden="true"></div>
                     <canvas id="publicMonthly" aria-label="Monthly apprehension trend"></canvas>
                 </div>
             <?php endif; ?>
@@ -249,7 +230,7 @@ require __DIR__ . '/includes/public_header.php';
 
     <div class="row g-3 mb-3">
         <div class="col-12 col-lg-6">
-            <div class="public-chart-card h-100">
+            <div class="public-chart-card h-100" data-reveal>
                 <h3>Category distribution</h3>
                 <?php if (empty($categoryLabels)): ?>
                     <div class="public-empty">
@@ -257,14 +238,15 @@ require __DIR__ . '/includes/public_header.php';
                         No category has reached the reporting threshold in this range.
                     </div>
                 <?php else: ?>
-                    <div class="public-chart-container">
+                    <div class="public-chart-container public-chart-container--category">
+                        <div class="chart-skeleton" aria-hidden="true"></div>
                         <canvas id="publicCategories" aria-label="Category distribution"></canvas>
                     </div>
                 <?php endif; ?>
             </div>
         </div>
         <div class="col-12 col-lg-6">
-            <div class="public-chart-card h-100">
+            <div class="public-chart-card h-100" data-reveal>
                 <h3>Yearly comparison</h3>
                 <?php if (empty($yearlyLabels)): ?>
                     <div class="public-empty">
@@ -273,6 +255,7 @@ require __DIR__ . '/includes/public_header.php';
                     </div>
                 <?php else: ?>
                     <div class="public-chart-container">
+                        <div class="chart-skeleton" aria-hidden="true"></div>
                         <canvas id="publicYearly" aria-label="Yearly comparison"></canvas>
                     </div>
                 <?php endif; ?>
@@ -280,7 +263,7 @@ require __DIR__ . '/includes/public_header.php';
         </div>
     </div>
 
-    <div class="public-notice">
+    <div class="public-notice" data-reveal>
         <i class="bi bi-info-circle me-1"></i>
         Figures reflect <strong>recorded apprehensions</strong> only. A recorded
         apprehension is not a legal finding of guilt. Figures may change as records

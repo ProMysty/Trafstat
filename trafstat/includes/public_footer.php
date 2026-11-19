@@ -13,7 +13,7 @@ if (!defined('APP_NAME')) {
     <div class="public-footer-inner">
         <div>
             <div class="d-flex align-items-center gap-2 mb-2">
-                <span class="public-brand-mark" style="width:32px;height:32px;font-size:0.95rem;">T</span>
+                <?= trafstat_mark('', 32, false) ?>
                 <strong style="color:#fff;font-size:1rem;"><?= e(APP_NAME) ?></strong>
             </div>
             <p>
@@ -46,6 +46,8 @@ if (!defined('APP_NAME')) {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="<?= e(url('assets/js/main.js')) ?>"></script>
+<script src="<?= e(url('assets/js/animations.js')) ?>"></script>
+<script src="<?= e(url('assets/js/chart-utils.js')) ?>"></script>
 
 <script nonce="<?= e(csp_nonce()) ?>">
 (function () {

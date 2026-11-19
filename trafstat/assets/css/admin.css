@@ -1,5 +1,7 @@
 /* ====================================================================
-   TrafStat — administrator shell, sidebar, topbar, login, dashboard
+   TrafStat — administrator shell v2
+   Sidebar, topbar, dashboard cards, login, auth pages.
+   Hover states here, entrance animations in Module 10.
    ==================================================================== */
 
 :root {
@@ -7,9 +9,7 @@
     --admin-topbar-height: 64px;
 }
 
-/* ---------------------------------------------------------------------
-   Shell layout
-   --------------------------------------------------------------------- */
+/* ---- Shell --------------------------------------------------------- */
 .admin-shell {
     display: flex;
     min-height: 100vh;
@@ -25,9 +25,7 @@
     flex: 1 1 auto;
 }
 
-/* ---------------------------------------------------------------------
-   Sidebar
-   --------------------------------------------------------------------- */
+/* ---- Sidebar ------------------------------------------------------- */
 .admin-sidebar {
     width: var(--admin-sidebar-width);
     background: var(--traf-charcoal);
@@ -40,30 +38,49 @@
     overflow-y: auto;
     flex-shrink: 0;
     z-index: 1040;
+    transition: transform var(--traf-duration-250) var(--traf-ease-out);
 }
 .sidebar-brand {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     padding: 1.15rem 1.25rem;
-    border-bottom: 1px solid rgba(255,255,255,.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    text-decoration: none;
+    color: inherit;
+    transition: background-color var(--traf-duration-150) var(--traf-ease);
 }
-.sidebar-brand-mark {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
+.sidebar-brand:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: inherit;
+}
+.sidebar-brand svg {
+    flex-shrink: 0;
     border-radius: 10px;
-    background: var(--traf-orange);
-    color: #fff;
-    font-weight: 700;
-    font-size: 1.1rem;
-    box-shadow: 0 4px 10px rgba(249,115,22,.35);
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
+    transition: transform var(--traf-duration-250) var(--traf-ease);
 }
-.sidebar-brand-text { display: flex; flex-direction: column; line-height: 1.1; }
-.sidebar-brand-name { font-weight: 700; color: #fff; letter-spacing: .01em; }
-.sidebar-brand-sub  { font-size: 0.72rem; color: #9CA3AF; text-transform: uppercase; letter-spacing: .08em; margin-top: 2px; }
+.sidebar-brand:hover svg {
+    transform: rotate(-4deg) scale(1.04);
+}
+.sidebar-brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+.sidebar-brand-name {
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.01em;
+    font-size: 1.02rem;
+}
+.sidebar-brand-sub {
+    font-size: 0.7rem;
+    color: #9CA3AF;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 2px;
+}
 
 .sidebar-nav { padding: 1rem 0.75rem; flex: 1 1 auto; }
 .sidebar-group-label {
@@ -85,18 +102,30 @@
     text-decoration: none;
     font-size: 0.92rem;
     font-weight: 500;
-    transition: background .12s ease, color .12s ease;
+    transition:
+        background-color var(--traf-duration-150) var(--traf-ease),
+        color           var(--traf-duration-150) var(--traf-ease),
+        transform       var(--traf-duration-150) var(--traf-ease);
 }
-.sidebar-link:hover { background: rgba(255,255,255,.06); color: #fff; }
+.sidebar-link:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    transform: translateX(2px);
+}
 .sidebar-link.is-active {
     background: var(--traf-orange);
     color: #fff;
-    box-shadow: 0 4px 10px rgba(249,115,22,.35);
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
 }
-.sidebar-link i { font-size: 1.05rem; width: 1.25rem; text-align: center; }
+.sidebar-link.is-active:hover { transform: none; }
+.sidebar-link i {
+    font-size: 1.05rem;
+    width: 1.25rem;
+    text-align: center;
+}
 .sidebar-footer {
     padding: 1rem 1.25rem;
-    border-top: 1px solid rgba(255,255,255,.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     color: #6B7280;
 }
 
@@ -105,10 +134,16 @@
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.55);
+    background: rgba(15, 23, 42, 0.55);
     z-index: 1030;
+    opacity: 0;
+    transition: opacity var(--traf-duration-250) var(--traf-ease);
+    backdrop-filter: blur(2px);
 }
-.sidebar-overlay.is-open { display: block; }
+.sidebar-overlay.is-open {
+    display: block;
+    opacity: 1;
+}
 
 @media (max-width: 991.98px) {
     .admin-sidebar {
@@ -118,15 +153,12 @@
         bottom: 0;
         height: 100vh;
         transform: translateX(-100%);
-        transition: transform .2s ease;
-        box-shadow: 0 8px 24px rgba(0,0,0,.35);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
     }
     .admin-sidebar.is-open { transform: translateX(0); }
 }
 
-/* ---------------------------------------------------------------------
-   Topbar
-   --------------------------------------------------------------------- */
+/* ---- Topbar -------------------------------------------------------- */
 .admin-topbar {
     height: var(--admin-topbar-height);
     display: flex;
@@ -148,17 +180,25 @@
     height: 40px;
     font-size: 1.35rem;
     color: var(--traf-charcoal);
+    transition:
+        background-color var(--traf-duration-150) var(--traf-ease),
+        border-color     var(--traf-duration-150) var(--traf-ease);
+}
+.topbar-toggle:hover {
+    background: var(--traf-orange-light);
+    border-color: var(--traf-orange);
+    color: var(--traf-orange-dark);
 }
 @media (max-width: 991.98px) {
     .topbar-toggle { display: inline-flex; align-items: center; justify-content: center; }
-    .admin-topbar  { padding: 0 1rem; }
+    .admin-topbar { padding: 0 1rem; }
     .admin-content { padding: 1rem; }
 }
 .topbar-title {
     font-size: 1.05rem;
     font-weight: 600;
     margin: 0;
-    color: var(--traf-charcoal);
+    color: var(--traf-ink);
     flex: 1 1 auto;
     white-space: nowrap;
     overflow: hidden;
@@ -174,19 +214,26 @@
     border-radius: var(--traf-radius);
     padding: 0.35rem 0.65rem;
     color: var(--traf-charcoal);
-    transition: background .12s ease;
+    transition:
+        background-color var(--traf-duration-150) var(--traf-ease),
+        border-color     var(--traf-duration-150) var(--traf-ease);
 }
-.topbar-account-btn:hover { background: var(--traf-orange-light); }
+.topbar-account-btn:hover {
+    background: var(--traf-orange-light);
+    border-color: var(--traf-orange);
+}
 .topbar-avatar {
-    width: 34px; height: 34px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
-    background: var(--traf-orange);
+    background: linear-gradient(135deg, var(--traf-orange), var(--traf-orange-dark));
     color: #fff;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
     font-size: 0.95rem;
+    box-shadow: 0 2px 6px rgba(249, 115, 22, 0.35);
 }
 .topbar-account-info { display: none; flex-direction: column; line-height: 1.05; text-align: left; }
 @media (min-width: 576px) { .topbar-account-info { display: flex; } }
@@ -200,10 +247,19 @@
     width: 100%;
     text-align: left;
 }
+.dropdown-menu {
+    border-radius: var(--traf-radius);
+    border-color: var(--traf-gray-border);
+    box-shadow: var(--traf-shadow-md);
+    padding: 0.35rem;
+    animation: trafDropdown var(--traf-duration-150) var(--traf-ease-out);
+}
+@keyframes trafDropdown {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
 
-/* ---------------------------------------------------------------------
-   Dashboard stat cards
-   --------------------------------------------------------------------- */
+/* ---- Dashboard stat cards ----------------------------------------- */
 .stat-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -219,9 +275,35 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+    position: relative;
+    overflow: hidden;
+    transition:
+        transform       var(--traf-duration-250) var(--traf-ease),
+        box-shadow      var(--traf-duration-250) var(--traf-ease),
+        border-color    var(--traf-duration-250) var(--traf-ease);
+}
+.stat-card::after {
+    /* Subtle orange sheen on the right edge */
+    content: '';
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: 4px;
+    background: linear-gradient(180deg,
+        transparent, var(--traf-orange), transparent);
+    opacity: 0;
+    transition: opacity var(--traf-duration-250) var(--traf-ease);
+}
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--traf-shadow-md);
+    border-color: var(--traf-orange);
+}
+.stat-card:hover::after {
+    opacity: 1;
 }
 .stat-card-icon {
-    width: 48px; height: 48px;
+    width: 48px;
+    height: 48px;
     border-radius: 12px;
     display: inline-flex;
     align-items: center;
@@ -230,24 +312,27 @@
     background: var(--traf-orange-light);
     color: var(--traf-orange-dark);
     flex-shrink: 0;
+    transition: transform var(--traf-duration-250) var(--traf-ease-spring);
+}
+.stat-card:hover .stat-card-icon {
+    transform: scale(1.08) rotate(-4deg);
 }
 .stat-card-value {
     font-size: 1.65rem;
     font-weight: 700;
-    color: var(--traf-charcoal);
+    color: var(--traf-ink);
     line-height: 1.1;
+    letter-spacing: -0.02em;
 }
 .stat-card-label {
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     color: var(--traf-gray-text);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-weight: 500;
 }
 
-/* ---------------------------------------------------------------------
-   Auth pages (login, change password)
-   --------------------------------------------------------------------- */
+/* ---- Login / auth pages ------------------------------------------- */
 .auth-page {
     min-height: 100vh;
     display: flex;
@@ -255,14 +340,14 @@
     justify-content: center;
     padding: 2rem 1rem;
     background:
-        radial-gradient(circle at 15% 15%, rgba(249,115,22,.12), transparent 45%),
-        radial-gradient(circle at 85% 85%, rgba(234,88,12,.10), transparent 45%),
+        radial-gradient(circle at 15% 15%, rgba(249, 115, 22, 0.14), transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(234, 88, 12, 0.10), transparent 45%),
         var(--traf-gray-bg);
 }
 .auth-card {
     background: #fff;
-    border-radius: var(--traf-radius-lg);
-    box-shadow: var(--traf-shadow-md);
+    border-radius: var(--traf-radius-xl);
+    box-shadow: var(--traf-shadow-lg);
     border: 1px solid var(--traf-gray-border);
     width: 100%;
     max-width: 440px;
@@ -271,30 +356,39 @@
 .auth-brand {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1.25rem;
+    gap: 0.9rem;
+    margin-bottom: 1.35rem;
 }
-.auth-brand-mark {
-    width: 42px; height: 42px;
+.auth-brand svg {
     border-radius: 12px;
-    background: var(--traf-orange);
-    color: #fff;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 1.2rem;
-    box-shadow: 0 6px 14px rgba(249,115,22,.35);
+    box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35);
 }
-.auth-brand-name { font-weight: 700; color: var(--traf-charcoal); font-size: 1.15rem; }
-.auth-brand-sub  { font-size: 0.75rem; color: var(--traf-gray-text); text-transform: uppercase; letter-spacing: .08em; }
+.auth-brand-name { font-weight: 700; color: var(--traf-ink); font-size: 1.15rem; }
+.auth-brand-sub {
+    font-size: 0.72rem;
+    color: var(--traf-gray-text);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+.auth-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+    color: var(--traf-ink);
+}
+.auth-subtitle {
+    color: var(--traf-gray-text);
+    font-size: 0.9rem;
+    margin: 0 0 1.5rem;
+}
+.auth-footer {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--traf-gray-text);
+}
 
-.auth-title { font-size: 1.25rem; font-weight: 600; margin: 0 0 .25rem; color: var(--traf-charcoal); }
-.auth-subtitle { color: var(--traf-gray-text); font-size: 0.9rem; margin: 0 0 1.5rem; }
-
-.auth-footer { margin-top: 1.5rem; text-align: center; font-size: 0.8rem; color: var(--traf-gray-text); }
-
-/* Show-password toggle inside input */
+/* Password toggle */
 .password-wrap { position: relative; }
 .password-wrap .form-control { padding-right: 2.75rem; }
 .password-toggle {
@@ -308,12 +402,17 @@
     padding: 0.25rem;
     cursor: pointer;
     font-size: 1.05rem;
+    border-radius: 6px;
+    transition:
+        color           var(--traf-duration-150) var(--traf-ease),
+        background-color var(--traf-duration-150) var(--traf-ease);
 }
-.password-toggle:hover { color: var(--traf-charcoal); }
+.password-toggle:hover {
+    color: var(--traf-charcoal);
+    background: var(--traf-gray-bg);
+}
 
-/* ---------------------------------------------------------------------
-   Charts
-   --------------------------------------------------------------------- */
+/* ---- Charts (containers only; visuals in Module 11) --------------- */
 .chart-card       { height: 100%; }
 .chart-card-body  {
     position: relative;
@@ -325,7 +424,7 @@
     height: 100% !important;
 }
 @media (max-width: 576px) {
-    .chart-card-body { height: 240px; }
+    .chart-card-body { height: 260px; }
 }
 .chart-empty {
     display: flex;
@@ -336,15 +435,14 @@
     font-size: 0.9rem;
 }
 
-/* ---------------------------------------------------------------------
-   Violation history — timeline list
-   --------------------------------------------------------------------- */
+/* ---- Violation history timeline ----------------------------------- */
 .history-timeline { list-style: none; padding-left: 0; margin: 0; }
 .history-timeline > li {
     position: relative;
     padding: 1rem 0 1rem 2rem;
     border-left: 2px solid var(--traf-gray-border);
     margin-left: 0.75rem;
+    transition: border-color var(--traf-duration-250) var(--traf-ease);
 }
 .history-timeline > li::before {
     content: '';
@@ -357,12 +455,13 @@
     background: var(--traf-orange);
     border: 3px solid #fff;
     box-shadow: 0 0 0 1px var(--traf-gray-border);
+    transition: transform var(--traf-duration-250) var(--traf-ease);
+}
+.history-timeline > li:hover::before {
+    transform: scale(1.15);
 }
 .history-timeline > li:last-child { border-left-color: transparent; }
 
-/* ---------------------------------------------------------------------
-   Repeat indicator badge
-   --------------------------------------------------------------------- */
 .badge-repeat {
     background: #FEF3C7;
     color: #92400E;
@@ -370,9 +469,7 @@
     font-weight: 600;
 }
 
-/* ---------------------------------------------------------------------
-   Hotspot map
-   --------------------------------------------------------------------- */
+/* ---- Hotspot map --------------------------------------------------- */
 #hotspotMap {
     height: 560px;
     width: 100%;
@@ -384,7 +481,6 @@
     #hotspotMap { height: 400px; }
 }
 
-/* Marker cluster overrides — keep the orange palette */
 .marker-cluster-small,
 .marker-cluster-medium,
 .marker-cluster-large {
@@ -398,7 +494,6 @@
     font-weight: 600 !important;
 }
 
-/* Individual marker — orange disc, white border */
 .trafstat-marker-dot {
     width: 18px;
     height: 18px;
@@ -406,10 +501,9 @@
     background: #F97316;
     border: 2px solid #fff;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    transition: background-color var(--traf-duration-150) var(--traf-ease);
 }
-.trafstat-marker-dot:hover {
-    background: #EA580C;
-}
+.trafstat-marker-dot:hover { background: #EA580C; }
 
 .leaflet-popup-content {
     font-size: 0.85rem;
@@ -418,7 +512,7 @@
 }
 .leaflet-popup-content h6 {
     margin: 0 0 0.35rem;
-    color: #1F2937;
+    color: var(--traf-ink);
     font-weight: 600;
 }
 .leaflet-popup-content dl {
@@ -429,7 +523,7 @@
     row-gap: 0.15rem;
 }
 .leaflet-popup-content dt {
-    color: #6B7280;
+    color: var(--traf-gray-text);
     font-weight: 500;
     font-size: 0.8rem;
 }
@@ -438,44 +532,28 @@
     font-size: 0.85rem;
 }
 
-/* ---------------------------------------------------------------------
-   Print view — clean layout when ?print=1 is passed to reports.php
-   --------------------------------------------------------------------- */
+/* ---- Print view ---------------------------------------------------- */
 @media print {
     @page { size: A4 landscape; margin: 1cm; }
-
     body {
         background: #fff !important;
         color: #000 !important;
         font-size: 10pt;
     }
-
     .no-print { display: none !important; }
-
     .print-header {
         border-bottom: 2px solid #1F2937;
         padding-bottom: 0.5rem;
         margin-bottom: 1rem;
     }
-    .print-header h1 {
-        margin: 0;
-        font-size: 16pt;
-        color: #1F2937;
-    }
-    .print-header .print-meta {
-        font-size: 9pt;
-        color: #4B5563;
-        margin-top: 0.25rem;
-    }
-
+    .print-header h1 { margin: 0; font-size: 16pt; color: #1F2937; }
+    .print-header .print-meta { font-size: 9pt; color: #4B5563; margin-top: 0.25rem; }
     table.print-table {
         width: 100%;
         border-collapse: collapse;
         font-size: 9pt;
     }
-    table.print-table thead {
-        display: table-header-group;
-    }
+    table.print-table thead { display: table-header-group; }
     table.print-table th,
     table.print-table td {
         border: 1px solid #D1D5DB;
@@ -490,7 +568,6 @@
         print-color-adjust: exact;
     }
     table.print-table tr { page-break-inside: avoid; }
-
     .print-footer {
         margin-top: 1rem;
         font-size: 8pt;
@@ -498,8 +575,6 @@
         text-align: center;
     }
 }
-
-/* Screen preview of the print layout, when user opens ?print=1 */
 .print-view {
     background: #fff;
     padding: 1.5rem;
@@ -511,11 +586,7 @@
     padding-bottom: 0.75rem;
     margin-bottom: 1.25rem;
 }
-.print-view .print-header h1 {
-    margin: 0;
-    font-size: 1.5rem;
-    color: var(--traf-charcoal);
-}
+.print-view .print-header h1 { margin: 0; font-size: 1.5rem; color: var(--traf-charcoal); }
 .print-view .print-header .print-meta {
     font-size: 0.85rem;
     color: var(--traf-gray-text);
@@ -534,7 +605,7 @@
     vertical-align: top;
 }
 .print-view table.print-table th {
-    background: var(--traf-gray-bg);
+    background: var(--traf-gray-50);
     font-weight: 600;
 }
 .print-view .print-footer {

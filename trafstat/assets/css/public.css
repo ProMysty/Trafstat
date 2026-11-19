@@ -1,5 +1,5 @@
 /* ====================================================================
-   TrafStat — public website styles
+   TrafStat — public website v2
    ==================================================================== */
 
 :root {
@@ -9,19 +9,17 @@
 body.public-body {
     background: #fff;
     color: var(--traf-charcoal);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-                 "Helvetica Neue", Arial, sans-serif;
 }
 
-/* ---------------------------------------------------------------------
-   Public header
-   --------------------------------------------------------------------- */
+/* ---- Nav ---------------------------------------------------------- */
 .public-nav {
     background: #fff;
     border-bottom: 1px solid var(--traf-gray-border);
     position: sticky;
     top: 0;
     z-index: 1020;
+    backdrop-filter: saturate(180%) blur(8px);
+    background: rgba(255, 255, 255, 0.94);
 }
 .public-nav-inner {
     max-width: var(--pub-max-width);
@@ -38,29 +36,26 @@ body.public-body {
     text-decoration: none;
     color: var(--traf-charcoal);
     flex-shrink: 0;
+    transition: opacity var(--traf-duration-150) var(--traf-ease);
 }
-.public-brand-mark {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-    background: var(--traf-orange);
-    color: #fff;
-    font-weight: 700;
-    font-size: 1.05rem;
-    box-shadow: 0 4px 10px rgba(249, 115, 22, 0.35);
+.public-brand:hover {
+    color: var(--traf-charcoal);
+    opacity: 0.85;
+}
+.public-brand svg {
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
+    transition: transform var(--traf-duration-250) var(--traf-ease);
+}
+.public-brand:hover svg {
+    transform: rotate(-4deg) scale(1.05);
 }
 .public-brand-text {
     display: flex;
     flex-direction: column;
     line-height: 1.15;
 }
-.public-brand-name {
-    font-weight: 700;
-    font-size: 1.05rem;
-}
+.public-brand-name { font-weight: 700; font-size: 1.05rem; color: var(--traf-ink); }
 .public-brand-tag {
     font-size: 0.7rem;
     color: var(--traf-gray-text);
@@ -81,6 +76,10 @@ body.public-body {
     color: var(--traf-charcoal);
     font-weight: 500;
     font-size: 0.92rem;
+    position: relative;
+    transition:
+        background-color var(--traf-duration-150) var(--traf-ease),
+        color           var(--traf-duration-150) var(--traf-ease);
 }
 .public-nav-link:hover {
     background: var(--traf-orange-light);
@@ -100,7 +99,15 @@ body.public-body {
     font-size: 1.25rem;
     color: var(--traf-charcoal);
     margin-left: auto;
+    transition:
+        background-color var(--traf-duration-150) var(--traf-ease),
+        border-color     var(--traf-duration-150) var(--traf-ease);
 }
+.public-nav-toggle:hover {
+    background: var(--traf-orange-light);
+    border-color: var(--traf-orange);
+}
+
 @media (max-width: 767.98px) {
     .public-nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
     .public-nav-links {
@@ -114,26 +121,32 @@ body.public-body {
         padding: 0.75rem 1.25rem;
         flex-direction: column;
         align-items: stretch;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+        box-shadow: var(--traf-shadow-md);
+        animation: trafNavIn var(--traf-duration-250) var(--traf-ease-out);
     }
     .public-nav-links.is-open { display: flex; }
-    .public-nav { position: sticky; }
+}
+@keyframes trafNavIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ---------------------------------------------------------------------
-   Hero
-   --------------------------------------------------------------------- */
+/* ---- Hero ---------------------------------------------------------- */
 .public-hero {
     background:
-        radial-gradient(circle at 85% 20%, rgba(249,115,22,0.14), transparent 55%),
-        radial-gradient(circle at 10% 90%, rgba(234,88,12,0.10), transparent 55%),
+        radial-gradient(circle at 85% 20%, rgba(249, 115, 22, 0.14), transparent 55%),
+        radial-gradient(circle at 10% 90%, rgba(234, 88, 12, 0.10), transparent 55%),
         var(--traf-orange-light);
     border-bottom: 1px solid var(--traf-gray-border);
+    overflow: hidden;
+    position: relative;
 }
 .public-hero-inner {
     max-width: var(--pub-max-width);
     margin: 0 auto;
     padding: 4.5rem 1.25rem 3.5rem;
+    position: relative;
+    z-index: 1;
 }
 .public-hero-eyebrow {
     display: inline-block;
@@ -147,12 +160,19 @@ body.public-body {
     letter-spacing: 0.08em;
     font-weight: 500;
     margin-bottom: 1rem;
+    transition:
+        border-color var(--traf-duration-250) var(--traf-ease),
+        box-shadow   var(--traf-duration-250) var(--traf-ease);
+}
+.public-hero-eyebrow:hover {
+    border-color: var(--traf-orange);
+    box-shadow: 0 2px 8px rgba(249, 115, 22, 0.15);
 }
 .public-hero h1 {
     font-size: clamp(2rem, 4.5vw, 3.25rem);
     font-weight: 800;
     line-height: 1.05;
-    color: var(--traf-charcoal);
+    color: var(--traf-ink);
     margin: 0 0 1rem;
     letter-spacing: -0.02em;
 }
@@ -169,11 +189,12 @@ body.public-body {
     flex-wrap: wrap;
     gap: 0.75rem;
 }
-.public-hero-actions .btn { padding: 0.7rem 1.4rem; font-weight: 500; }
+.public-hero-actions .btn {
+    padding: 0.7rem 1.4rem;
+    font-weight: 500;
+}
 
-/* ---------------------------------------------------------------------
-   Sections
-   --------------------------------------------------------------------- */
+/* ---- Sections ------------------------------------------------------ */
 .public-section {
     max-width: var(--pub-max-width);
     margin: 0 auto;
@@ -194,7 +215,7 @@ body.public-body {
 .public-section h2 {
     font-size: 1.9rem;
     font-weight: 700;
-    color: var(--traf-charcoal);
+    color: var(--traf-ink);
     margin: 0 0 0.5rem;
     letter-spacing: -0.015em;
 }
@@ -204,9 +225,7 @@ body.public-body {
     color: var(--traf-gray-text);
 }
 
-/* ---------------------------------------------------------------------
-   Stat cards (public)
-   --------------------------------------------------------------------- */
+/* ---- Stat cards ---------------------------------------------------- */
 .public-stat-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
@@ -219,6 +238,15 @@ body.public-body {
     padding: 1.4rem;
     text-align: center;
     box-shadow: var(--traf-shadow-sm);
+    transition:
+        transform    var(--traf-duration-250) var(--traf-ease),
+        box-shadow   var(--traf-duration-250) var(--traf-ease),
+        border-color var(--traf-duration-250) var(--traf-ease);
+}
+.public-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--traf-shadow-md);
+    border-color: var(--traf-orange);
 }
 .public-stat-value {
     font-size: 2.2rem;
@@ -236,9 +264,7 @@ body.public-body {
     font-weight: 500;
 }
 
-/* ---------------------------------------------------------------------
-   Feature cards
-   --------------------------------------------------------------------- */
+/* ---- Feature cards ------------------------------------------------- */
 .public-card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -251,10 +277,13 @@ body.public-body {
     padding: 1.5rem;
     text-decoration: none;
     color: inherit;
-    transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+    transition:
+        transform    var(--traf-duration-250) var(--traf-ease),
+        box-shadow   var(--traf-duration-250) var(--traf-ease),
+        border-color var(--traf-duration-250) var(--traf-ease);
 }
 .public-feature-card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
     box-shadow: var(--traf-shadow-md);
     border-color: var(--traf-orange);
     color: inherit;
@@ -270,12 +299,16 @@ body.public-body {
     justify-content: center;
     font-size: 1.35rem;
     margin-bottom: 0.75rem;
+    transition: transform var(--traf-duration-250) var(--traf-ease-spring);
+}
+.public-feature-card:hover .public-feature-icon {
+    transform: scale(1.1) rotate(-6deg);
 }
 .public-feature-card h3 {
     font-size: 1.05rem;
     font-weight: 600;
     margin: 0 0 0.4rem;
-    color: var(--traf-charcoal);
+    color: var(--traf-ink);
 }
 .public-feature-card p {
     margin: 0;
@@ -283,9 +316,7 @@ body.public-body {
     color: var(--traf-gray-text);
 }
 
-/* ---------------------------------------------------------------------
-   Category cards (violations.php)
-   --------------------------------------------------------------------- */
+/* ---- Categories ---------------------------------------------------- */
 .public-category-list {
     display: grid;
     grid-template-columns: 1fr;
@@ -300,12 +331,21 @@ body.public-body {
     border-left: 4px solid var(--traf-orange);
     border-radius: var(--traf-radius);
     padding: 1.15rem 1.25rem;
+    transition:
+        border-color    var(--traf-duration-250) var(--traf-ease),
+        box-shadow      var(--traf-duration-250) var(--traf-ease),
+        transform       var(--traf-duration-250) var(--traf-ease);
+}
+.public-category-card:hover {
+    border-left-color: var(--traf-orange-dark);
+    box-shadow: var(--traf-shadow-sm);
+    transform: translateX(2px);
 }
 .public-category-card h3 {
     font-size: 1rem;
     font-weight: 600;
     margin: 0 0 0.4rem;
-    color: var(--traf-charcoal);
+    color: var(--traf-ink);
 }
 .public-category-card p {
     margin: 0;
@@ -313,9 +353,7 @@ body.public-body {
     color: var(--traf-gray-text);
 }
 
-/* ---------------------------------------------------------------------
-   Charts container (statistics.php)
-   --------------------------------------------------------------------- */
+/* ---- Chart card ---------------------------------------------------- */
 .public-chart-card {
     background: #fff;
     border: 1px solid var(--traf-gray-border);
@@ -323,12 +361,16 @@ body.public-body {
     padding: 1.25rem 1.5rem;
     box-shadow: var(--traf-shadow-sm);
     margin-bottom: 1.5rem;
+    transition: box-shadow var(--traf-duration-250) var(--traf-ease);
+}
+.public-chart-card:hover {
+    box-shadow: var(--traf-shadow-md);
 }
 .public-chart-card h3 {
     font-size: 1rem;
     font-weight: 600;
     margin: 0 0 1rem;
-    color: var(--traf-charcoal);
+    color: var(--traf-ink);
 }
 .public-chart-container {
     position: relative;
@@ -338,9 +380,7 @@ body.public-body {
     .public-chart-container { height: 260px; }
 }
 
-/* ---------------------------------------------------------------------
-   Disclaimer / notices
-   --------------------------------------------------------------------- */
+/* ---- Notices ------------------------------------------------------- */
 .public-notice {
     background: var(--traf-orange-light);
     border: 1px solid #FCD9B6;
@@ -352,9 +392,7 @@ body.public-body {
 }
 .public-notice i { color: var(--traf-orange-dark); }
 
-/* ---------------------------------------------------------------------
-   Footer
-   --------------------------------------------------------------------- */
+/* ---- Footer -------------------------------------------------------- */
 .public-footer {
     background: var(--traf-charcoal);
     color: #D1D5DB;
@@ -369,9 +407,7 @@ body.public-body {
     gap: 1.5rem;
 }
 @media (min-width: 768px) {
-    .public-footer-inner {
-        grid-template-columns: 2fr 1fr 1fr;
-    }
+    .public-footer-inner { grid-template-columns: 2fr 1fr 1fr; }
 }
 .public-footer h4 {
     color: #fff;
@@ -391,13 +427,14 @@ body.public-body {
     display: block;
     padding: 0.25rem 0;
     font-size: 0.9rem;
+    transition: color var(--traf-duration-150) var(--traf-ease);
 }
 .public-footer a:hover { color: var(--traf-orange); }
 .public-footer-bottom {
     max-width: var(--pub-max-width);
     margin: 2rem auto 0;
     padding-top: 1.25rem;
-    border-top: 1px solid rgba(255,255,255,0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     font-size: 0.8rem;
     color: #6B7280;
     display: flex;
@@ -406,13 +443,11 @@ body.public-body {
     gap: 0.5rem;
 }
 
-/* ---------------------------------------------------------------------
-   Empty states
-   --------------------------------------------------------------------- */
+/* ---- Empty states -------------------------------------------------- */
 .public-empty {
     text-align: center;
     padding: 3rem 1rem;
-    background: var(--traf-gray-bg);
+    background: var(--traf-gray-50);
     border-radius: var(--traf-radius-lg);
     color: var(--traf-gray-text);
 }

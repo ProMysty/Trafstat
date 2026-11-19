@@ -62,7 +62,7 @@ require __DIR__ . '/includes/public_header.php';
 </section>
 
 <section class="public-section">
-    <div class="public-section-header">
+    <div class="public-section-header" data-reveal>
         <div class="public-section-eyebrow">Approved aggregates</div>
         <h2>Traffic figures at a glance</h2>
         <p class="public-section-lead">
@@ -72,20 +72,20 @@ require __DIR__ . '/includes/public_header.php';
         </p>
     </div>
 
-    <div class="public-stat-grid">
-        <div class="public-stat-card">
+    <div class="public-stat-grid" data-reveal-stagger>
+        <div class="public-stat-card" data-reveal>
             <div class="public-stat-value"><?= number_format($totalActiveApprehensions) ?></div>
             <div class="public-stat-label">Total recorded apprehensions</div>
         </div>
-        <div class="public-stat-card">
+        <div class="public-stat-card" data-reveal>
             <div class="public-stat-value"><?= number_format($totalActiveViolators) ?></div>
             <div class="public-stat-label">Active violators on record</div>
         </div>
-        <div class="public-stat-card">
+        <div class="public-stat-card" data-reveal>
             <div class="public-stat-value"><?= number_format($thisYearApprehensions) ?></div>
             <div class="public-stat-label">Recorded in <?= e((string) $currentYear) ?></div>
         </div>
-        <div class="public-stat-card">
+        <div class="public-stat-card" data-reveal>
             <div class="public-stat-value"><?= number_format($totalActiveCategories) ?></div>
             <div class="public-stat-label">Published violation categories</div>
         </div>
@@ -94,25 +94,25 @@ require __DIR__ . '/includes/public_header.php';
 
 <section class="public-section" style="background:var(--traf-gray-bg);max-width:none;">
     <div style="max-width:var(--pub-max-width);margin:0 auto;padding:0 0;">
-        <div class="public-section-header">
+        <div class="public-section-header" data-reveal>
             <div class="public-section-eyebrow">What TrafStat provides</div>
             <h2>Explore the system</h2>
         </div>
 
-        <div class="public-card-grid">
-            <a href="<?= e(url('statistics.php')) ?>" class="public-feature-card">
+        <div class="public-card-grid" data-reveal-stagger>
+            <a href="<?= e(url('statistics.php')) ?>" class="public-feature-card" data-reveal>
                 <div class="public-feature-icon"><i class="bi bi-graph-up-arrow"></i></div>
                 <h3>Public statistics</h3>
                 <p>Monthly trends, category distribution, yearly comparisons.
                    Aggregated figures only — no individual data.</p>
             </a>
-            <a href="<?= e(url('violations.php')) ?>" class="public-feature-card">
+            <a href="<?= e(url('violations.php')) ?>" class="public-feature-card" data-reveal>
                 <div class="public-feature-icon"><i class="bi bi-tags"></i></div>
                 <h3>Violation information</h3>
                 <p>Plain-language descriptions of traffic violation categories
                    published by the office.</p>
             </a>
-            <a href="<?= e(url('about.php')) ?>" class="public-feature-card">
+            <a href="<?= e(url('about.php')) ?>" class="public-feature-card" data-reveal>
                 <div class="public-feature-icon"><i class="bi bi-info-circle"></i></div>
                 <h3>About TrafStat</h3>
                 <p>Purpose, objectives, coverage, and privacy notice for the
@@ -124,7 +124,7 @@ require __DIR__ . '/includes/public_header.php';
 
 <?php if (!empty($publicCategories)): ?>
 <section class="public-section">
-    <div class="public-section-header">
+    <div class="public-section-header" data-reveal>
         <div class="public-section-eyebrow">Approved by the office</div>
         <h2>Recently published violation types</h2>
         <p class="public-section-lead">
@@ -133,16 +133,16 @@ require __DIR__ . '/includes/public_header.php';
         </p>
     </div>
 
-    <div class="public-category-list">
+    <div class="public-category-list" data-reveal-stagger>
         <?php foreach ($publicCategories as $c): ?>
-            <div class="public-category-card">
+            <div class="public-category-card" data-reveal>
                 <h3><?= e($c['violation_name']) ?></h3>
                 <p><?= e($c['public_description']) ?></p>
             </div>
         <?php endforeach; ?>
     </div>
 
-    <div class="text-center mt-4">
+    <div class="text-center mt-4" data-reveal>
         <a href="<?= e(url('violations.php')) ?>" class="btn btn-outline-primary">
             See all published categories
         </a>
@@ -151,7 +151,7 @@ require __DIR__ . '/includes/public_header.php';
 <?php endif; ?>
 
 <section class="public-section" style="padding-top:0;">
-    <div class="public-notice">
+    <div class="public-notice" data-reveal>
         <i class="bi bi-shield-check me-1"></i>
         <strong>Privacy:</strong> this public website never displays individual
         violator names, addresses, contact numbers, plate numbers, apprehension

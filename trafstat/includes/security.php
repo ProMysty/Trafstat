@@ -68,9 +68,16 @@ function start_secure_session(): void
     $secure = (APP_ENV === 'production') || $https;
 
     session_name(SESSION_NAME);
+    
+    // Scope the session cookie to the app's base path.
+    // At the web root: "/". In a subdirectory: "/trafstat".
+    $cookiePath = (defined('APP_BASE_PATH') && APP_BASE_PATH !== '/')
+        ? APP_BASE_PATH
+        : '/';
+
     session_set_cookie_params([
         'lifetime' => 0,
-        'path'     => '/',
+        'path'     => $cookiePath,
         'domain'   => '',
         'secure'   => $secure,
         'httponly' => true,

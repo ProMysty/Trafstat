@@ -1,29 +1,47 @@
 /* ====================================================================
-   TrafStat — dashboard charts
-   Reads window.DASHBOARD_DATA (injected server-side) and renders:
-     - Monthly apprehension trend (last 12 months) — line
-     - Violation category distribution          — doughnut
-     - Yearly apprehension trend (last 5 years) — bar
+   TrafStat — dashboard charts (mobile-aware)
+   Uses TrafChart helpers from chart-utils.js for responsive configs.
+   Rebuilds all three charts when the viewport crosses the mobile
+   breakpoint so the category chart swaps doughnut ↔ bar appropriately.
    ==================================================================== */
 (function () {
     'use strict';
 
+    var charts = { monthly: null, category: null, yearly: null };
+
     document.addEventListener('DOMContentLoaded', function () {
-        if (typeof Chart === 'undefined') { return; }
-        var data = window.DASHBOARD_DATA || {};
+        if (typeof Chart === 'undefined' || typeof TrafChart === 'undefined') {
+            return;
+        }
 
         Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
         Chart.defaults.color        = '#6B7280';
         Chart.defaults.borderColor  = '#E5E7EB';
 
+        buildCharts();
+
+        /* Rebuild when the viewport crosses the mobile breakpoint. */
+        TrafChart.onChangeBreakpoint(function () {
+            Object.keys(charts).forEach(function (key) {
+                if (charts[key]) {
+                    charts[key].destroy();
+                    charts[key] = null;
+                }
+            });
+            buildCharts();
+        });
+    });
+
+    function buildCharts() {
+        var data = window.DASHBOARD_DATA || {};
         var ORANGE = '#F97316';
         var ORANGE_LIGHT = 'rgba(249,115,22,0.15)';
         var CHARCOAL = '#1F2937';
 
-        /* ---- Monthly trend ------------------------------------------ */
+        /* ---- Monthly line ----------------------------------------- */
         var monthlyCanvas = document.getElementById('chartMonthly');
         if (monthlyCanvas && data.monthly && data.monthly.labels) {
-            new Chart(monthlyCanvas, {
+            charts.monthly = new Chart(monthlyCanvas, {
                 type: 'line',
                 data: {
                     labels: data.monthly.labels,
@@ -34,65 +52,42 @@
                         backgroundColor: ORANGE_LIGHT,
                         fill: true,
                         tension: 0.3,
-                        pointRadius: 4,
+                        pointRadius: TrafChart.isMobile() ? 3 : 4,
+                        pointHoverRadius: TrafChart.isMobile() ? 6 : 5,
+                        pointHitRadius: TrafChart.isMobile() ? 18 : 10,
                         pointBackgroundColor: ORANGE,
                         pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
+                        pointBorderWidth: 2
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { intersect: false, mode: 'index' }
-                    },
-                    scales: {
-                        y: { beginAtZero: true, ticks: { precision: 0 } }
+                options: TrafChart.lineOptions({
+                    showLegend: false,
+                    tooltip: {
+                        callbacks: {
+                            label: function (ctx) {
+                                return ctx.parsed.y + ' apprehended';
+                            }
+                        }
                     }
-                }
+                })
             });
+            if (window.trafHideSkeleton) { window.trafHideSkeleton(monthlyCanvas); }
         }
 
-        /* ---- Category doughnut ------------------------------------- */
+        /* ---- Category — doughnut on desktop, bar on mobile -------- */
         var categoryCanvas = document.getElementById('chartCategories');
         if (categoryCanvas && data.category && data.category.labels) {
-            var palette = [
-                '#F97316', '#EA580C', '#FB923C', '#FDBA74', '#FED7AA',
-                '#F59E0B', '#FBBF24', '#FCD34D', '#1F2937', '#6B7280'
-            ];
-            var bg = data.category.labels.map(function (_, i) {
-                return palette[i % palette.length];
+            charts.category = TrafChart.renderCategoryChart('chartCategories', {
+                labels: data.category.labels,
+                values: data.category.values
             });
-            new Chart(categoryCanvas, {
-                type: 'doughnut',
-                data: {
-                    labels: data.category.labels,
-                    datasets: [{
-                        data: data.category.values,
-                        backgroundColor: bg,
-                        borderWidth: 2,
-                        borderColor: '#fff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { boxWidth: 12, padding: 10, font: { size: 11 } }
-                        }
-                    },
-                    cutout: '62%'
-                }
-            });
+            if (window.trafHideSkeleton) { window.trafHideSkeleton(categoryCanvas); }
         }
 
-        /* ---- Yearly bar -------------------------------------------- */
+        /* ---- Yearly bar ------------------------------------------- */
         var yearlyCanvas = document.getElementById('chartYearly');
         if (yearlyCanvas && data.yearly && data.yearly.labels) {
-            new Chart(yearlyCanvas, {
+            charts.yearly = new Chart(yearlyCanvas, {
                 type: 'bar',
                 data: {
                     labels: data.yearly.labels,
@@ -101,18 +96,21 @@
                         data: data.yearly.values,
                         backgroundColor: CHARCOAL,
                         borderRadius: 6,
-                        maxBarThickness: 56
+                        maxBarThickness: TrafChart.isMobile() ? 32 : 56
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, ticks: { precision: 0 } }
+                options: TrafChart.barOptions({
+                    showLegend: false,
+                    tooltip: {
+                        callbacks: {
+                            label: function (ctx) {
+                                return ctx.parsed.y + ' apprehended';
+                            }
+                        }
                     }
-                }
+                })
             });
+            if (window.trafHideSkeleton) { window.trafHideSkeleton(yearlyCanvas); }
         }
-    });
+    }
 })();

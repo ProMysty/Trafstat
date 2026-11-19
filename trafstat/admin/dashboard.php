@@ -169,6 +169,42 @@ require __DIR__ . '/../includes/header.php';
             <div class="stat-card-label">Repeat Recorded Incidents</div>
         </div>
     </div>
+        <div class="stat-card">
+        <div class="stat-card-icon"><i class="bi bi-person-vcard"></i></div>
+        <div>
+            <div class="stat-card-value" data-count-target="<?= $totalViolators ?>">
+                <?= number_format($totalViolators) ?>
+            </div>
+            <div class="stat-card-label">Traffic Violators</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-icon"><i class="bi bi-truck"></i></div>
+        <div>
+            <div class="stat-card-value" data-count-target="<?= $totalVehicles ?>">
+                <?= number_format($totalVehicles) ?>
+            </div>
+            <div class="stat-card-label">Registered Vehicles</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-icon"><i class="bi bi-journal-text"></i></div>
+        <div>
+            <div class="stat-card-value" data-count-target="<?= $totalApprehensions ?>">
+                <?= number_format($totalApprehensions) ?>
+            </div>
+            <div class="stat-card-label">Apprehension Records</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-icon"><i class="bi bi-arrow-repeat"></i></div>
+        <div>
+            <div class="stat-card-value" data-count-target="<?= $repeatViolators ?>">
+                <?= number_format($repeatViolators) ?>
+            </div>
+            <div class="stat-card-label">Repeat Recorded Incidents</div>
+        </div>
+    </div>
 </div>
 
 <!-- Charts -->
@@ -273,6 +309,38 @@ require __DIR__ . '/../includes/header.php';
                         </table>
                     </div>
                 <?php endif; ?>
+            </div>
+        </div>
+    </div>
+        <div class="col-12 col-lg-8">
+        <div class="card chart-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <i class="bi bi-graph-up text-primary"></i>
+                    <h3 class="section-title m-0">Monthly Apprehension Trend</h3>
+                </div>
+                <div class="chart-card-body">
+                    <div class="chart-skeleton" aria-hidden="true"></div>
+                    <canvas id="chartMonthly" aria-label="Monthly apprehension trend"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-4">
+        <div class="card chart-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <i class="bi bi-pie-chart text-primary"></i>
+                    <h3 class="section-title m-0">Category Distribution</h3>
+                </div>
+                                <div class="chart-card-body chart-card-body--category">
+                    <?php if (empty($categoryLabels)): ?>
+                        <div class="chart-empty">No apprehensions recorded yet.</div>
+                    <?php else: ?>
+                        <div class="chart-skeleton" aria-hidden="true"></div>
+                        <canvas id="chartCategories" aria-label="Category distribution"></canvas>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     </div>

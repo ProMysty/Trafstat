@@ -31,6 +31,18 @@ $navItems = [
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="TrafStat — Traffic Violation Records and Statistical Analytics for Pagadian City.">
     <title><?= e($pageTitle) ?> — <?= e(APP_NAME) ?></title>
+    
+    <script nonce="<?= e(csp_nonce()) ?>">
+    (function () {
+        try {
+            var reduced = window.matchMedia
+                && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (!reduced) {
+                document.documentElement.classList.add('js-ready');
+            }
+        } catch (e) {}
+    })();
+    </script>
 
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
@@ -38,13 +50,16 @@ $navItems = [
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="<?= e(url('assets/css/style.css')) ?>">
     <link rel="stylesheet" href="<?= e(url('assets/css/public.css')) ?>">
+    <link rel="stylesheet" href="<?= e(url('assets/css/style.css')) ?>">
+    <link rel="stylesheet" href="<?= e(url('assets/css/public.css')) ?>">
+    <link rel="stylesheet" href="<?= e(url('assets/css/animations.css')) ?>"></body>
 </head>
 <body class="public-body">
 
 <header class="public-nav">
     <div class="public-nav-inner">
         <a href="<?= e(url('index.php')) ?>" class="public-brand">
-            <span class="public-brand-mark">T</span>
+            <?= trafstat_mark('public-brand-mark', 40, false) ?>
             <span class="public-brand-text">
                 <span class="public-brand-name"><?= e(APP_NAME) ?></span>
                 <span class="public-brand-tag">Pagadian City</span>

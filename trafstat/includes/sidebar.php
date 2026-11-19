@@ -29,13 +29,13 @@ $navGroups = [
 ];
 ?>
 <aside class="admin-sidebar" data-sidebar>
-    <div class="sidebar-brand">
-        <span class="sidebar-brand-mark">T</span>
+    <a href="<?= e(url('admin/dashboard.php')) ?>" class="sidebar-brand" aria-label="TrafStat home">
+        <?= trafstat_mark('sidebar-brand-mark', 40, false) ?>
         <div class="sidebar-brand-text">
             <span class="sidebar-brand-name"><?= e(APP_NAME) ?></span>
             <span class="sidebar-brand-sub">Administration</span>
         </div>
-    </div>
+    </a>
 
     <nav class="sidebar-nav" aria-label="Primary">
         <?php foreach ($navGroups as $groupLabel => $items): ?>

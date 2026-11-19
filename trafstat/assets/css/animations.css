@@ -1,0 +1,341 @@
+/* ====================================================================
+   TrafStat — motion system v1
+   Every animation is disabled by the global prefers-reduced-motion
+   rule in style.css. This file must not fight that — no !important
+   here, except where noted.
+   ==================================================================== */
+
+/* ---- Page enter ---------------------------------------------------- */
+.admin-content {
+    animation: trafPageIn 320ms var(--traf-ease-out);
+}
+@keyframes trafPageIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: none; }
+}
+
+/* ---- Scroll-reveal (for future use on public pages) ---------------- */
+[data-reveal] {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+        opacity   var(--traf-duration-500) var(--traf-ease-out),
+        transform var(--traf-duration-500) var(--traf-ease-out);
+}
+[data-reveal].is-revealed {
+    opacity: 1;
+    transform: none;
+}
+
+/* ---- Table row stagger --------------------------------------------- */
+/* Cap at 25 rows. Rows 26+ render immediately (no animation). */
+@keyframes trafRowIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: none; }
+}
+table.table > tbody > tr:nth-child(-n+25) {
+    animation: trafRowIn 280ms var(--traf-ease-out) both;
+}
+table.table > tbody > tr:nth-child(1)  { animation-delay:   0ms; }
+table.table > tbody > tr:nth-child(2)  { animation-delay:  20ms; }
+table.table > tbody > tr:nth-child(3)  { animation-delay:  40ms; }
+table.table > tbody > tr:nth-child(4)  { animation-delay:  60ms; }
+table.table > tbody > tr:nth-child(5)  { animation-delay:  80ms; }
+table.table > tbody > tr:nth-child(6)  { animation-delay: 100ms; }
+table.table > tbody > tr:nth-child(7)  { animation-delay: 120ms; }
+table.table > tbody > tr:nth-child(8)  { animation-delay: 140ms; }
+table.table > tbody > tr:nth-child(9)  { animation-delay: 160ms; }
+table.table > tbody > tr:nth-child(10) { animation-delay: 180ms; }
+table.table > tbody > tr:nth-child(11) { animation-delay: 200ms; }
+table.table > tbody > tr:nth-child(12) { animation-delay: 220ms; }
+table.table > tbody > tr:nth-child(13) { animation-delay: 240ms; }
+table.table > tbody > tr:nth-child(14) { animation-delay: 260ms; }
+table.table > tbody > tr:nth-child(15) { animation-delay: 280ms; }
+table.table > tbody > tr:nth-child(16) { animation-delay: 300ms; }
+table.table > tbody > tr:nth-child(17) { animation-delay: 320ms; }
+table.table > tbody > tr:nth-child(18) { animation-delay: 340ms; }
+table.table > tbody > tr:nth-child(19) { animation-delay: 360ms; }
+table.table > tbody > tr:nth-child(20) { animation-delay: 380ms; }
+table.table > tbody > tr:nth-child(21) { animation-delay: 400ms; }
+table.table > tbody > tr:nth-child(22) { animation-delay: 420ms; }
+table.table > tbody > tr:nth-child(23) { animation-delay: 440ms; }
+table.table > tbody > tr:nth-child(24) { animation-delay: 460ms; }
+table.table > tbody > tr:nth-child(25) { animation-delay: 480ms; }
+
+/* ---- Animated counters --------------------------------------------- */
+/* Keep tabular numerals so digits don't jiggle while counting. */
+[data-count-target] {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+}
+
+/* ---- Chart skeleton ------------------------------------------------ */
+.chart-skeleton {
+    position: absolute;
+    inset: 1rem 1.25rem;
+    border-radius: var(--traf-radius);
+    background:
+        linear-gradient(90deg,
+            var(--traf-gray-bg) 0%,
+            var(--traf-gray-border) 50%,
+            var(--traf-gray-bg) 100%);
+    background-size: 200% 100%;
+    animation: trafShimmer 1.4s var(--traf-ease) infinite;
+    pointer-events: none;
+    transition: opacity var(--traf-duration-250) var(--traf-ease);
+    z-index: 1;
+}
+.chart-skeleton.is-hidden {
+    opacity: 0;
+}
+@keyframes trafShimmer {
+    0%   { background-position:  200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ---- Toasts -------------------------------------------------------- */
+.traf-toast-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1090;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    width: 100%;
+    max-width: 400px;
+    pointer-events: none;
+}
+@media (max-width: 575.98px) {
+    .traf-toast-container {
+        top: auto;
+        bottom: 1rem;
+        left: 0.75rem;
+        right: 0.75rem;
+        max-width: none;
+    }
+}
+
+.traf-toast {
+    pointer-events: auto;
+    background: #fff;
+    border: 1px solid var(--traf-gray-border);
+    border-left: 4px solid var(--traf-orange);
+    border-radius: var(--traf-radius);
+    padding: 0.85rem 1rem;
+    box-shadow: var(--traf-shadow-md);
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    font-size: 0.9rem;
+    color: var(--traf-charcoal);
+    animation: trafToastIn 320ms var(--traf-ease-spring);
+    transform-origin: top right;
+    will-change: transform, opacity;
+}
+@media (max-width: 575.98px) {
+    .traf-toast {
+        transform-origin: bottom center;
+        animation-name: trafToastInUp;
+    }
+}
+.traf-toast.is-leaving {
+    animation: trafToastOut 200ms var(--traf-ease-in) forwards;
+}
+@keyframes trafToastIn {
+    from { opacity: 0; transform: translateX(24px) scale(0.98); }
+    to   { opacity: 1; transform: none; }
+}
+@keyframes trafToastInUp {
+    from { opacity: 0; transform: translateY(24px) scale(0.98); }
+    to   { opacity: 1; transform: none; }
+}
+@keyframes trafToastOut {
+    to { opacity: 0; transform: translateX(24px) scale(0.98); }
+}
+
+.traf-toast--success { border-left-color: var(--traf-success); }
+.traf-toast--error,
+.traf-toast--danger  { border-left-color: var(--traf-danger); }
+.traf-toast--warning { border-left-color: var(--traf-warning); }
+.traf-toast--info    { border-left-color: var(--traf-info); }
+
+.traf-toast-icon {
+    font-size: 1.1rem;
+    line-height: 1;
+    margin-top: 0.1rem;
+    flex-shrink: 0;
+}
+.traf-toast--success .traf-toast-icon { color: var(--traf-success); }
+.traf-toast--error .traf-toast-icon,
+.traf-toast--danger  .traf-toast-icon { color: var(--traf-danger); }
+.traf-toast--warning .traf-toast-icon { color: var(--traf-warning); }
+.traf-toast--info    .traf-toast-icon { color: var(--traf-info); }
+
+.traf-toast-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+}
+.traf-toast-close {
+    border: none;
+    background: transparent;
+    color: var(--traf-gray-text);
+    padding: 0.15rem;
+    margin: -0.15rem -0.25rem 0 0;
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+    line-height: 1;
+    transition:
+        color var(--traf-duration-150) var(--traf-ease),
+        background-color var(--traf-duration-150) var(--traf-ease);
+}
+.traf-toast-close:hover {
+    color: var(--traf-charcoal);
+    background: var(--traf-gray-bg);
+}
+
+/* ---- Flash-message fallback (kept for login.php only) -------------- */
+/* Login has its own inline alerts. Everything else uses toasts. */
+
+/* ====================================================================
+   Mobile chart container height — the category chart on mobile becomes
+   a horizontal bar chart and needs more vertical space per category.
+   ==================================================================== */
+@media (max-width: 575.98px) {
+    .chart-card-body.chart-card-body--category,
+    .public-chart-container.public-chart-container--category {
+        height: 320px;
+    }
+
+    /* Slightly increase legend tap targets on mobile */
+    .chart-card-body canvas,
+    .public-chart-container canvas {
+        touch-action: pan-y;
+    }
+}
+
+/* ====================================================================
+   Module 12 — Public site animations + reveal safety fix
+   ==================================================================== */
+
+/* ---- Hero entrance (pure CSS, no JS required) ---------------------- */
+@keyframes trafHeroEyebrow {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: none; }
+}
+@keyframes trafHeroTitle {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: none; }
+}
+@keyframes trafHeroLead {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: none; }
+}
+@keyframes trafHeroActions {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: none; }
+}
+
+.public-hero-eyebrow {
+    animation: trafHeroEyebrow 500ms var(--traf-ease-out)  80ms both;
+}
+.public-hero h1 {
+    animation: trafHeroTitle   640ms var(--traf-ease-out) 200ms both;
+}
+.public-hero-lead {
+    animation: trafHeroLead    640ms var(--traf-ease-out) 340ms both;
+}
+.public-hero-actions {
+    animation: trafHeroActions 520ms var(--traf-ease-out) 460ms both;
+}
+
+/* ---- Scroll-reveal: JS-safe pattern -------------------------------- */
+/*
+ * Bug inherited from Module 10: `[data-reveal] { opacity: 0 }` hides
+ * content unconditionally. If JS fails or is slow, the whole page stays
+ * blank. Below overrides with a `js-ready` gate:
+ *
+ *   - Without .js-ready (JS off / slow): elements are VISIBLE.
+ *   - With .js-ready (JS confirmed): elements start hidden, reveal on scroll.
+ */
+
+[data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition:
+        opacity   var(--traf-duration-500) var(--traf-ease-out),
+        transform var(--traf-duration-500) var(--traf-ease-out);
+}
+
+html.js-ready [data-reveal]:not(.is-revealed) {
+    opacity: 0;
+    transform: translateY(14px);
+}
+
+html.js-ready [data-reveal].is-revealed {
+    opacity: 1;
+    transform: none;
+}
+
+/* ---- Staggered reveal on grid children ----------------------------- */
+[data-reveal-stagger] > [data-reveal]:nth-child(1) { transition-delay:   0ms; }
+[data-reveal-stagger] > [data-reveal]:nth-child(2) { transition-delay:  80ms; }
+[data-reveal-stagger] > [data-reveal]:nth-child(3) { transition-delay: 160ms; }
+[data-reveal-stagger] > [data-reveal]:nth-child(4) { transition-delay: 240ms; }
+[data-reveal-stagger] > [data-reveal]:nth-child(5) { transition-delay: 320ms; }
+[data-reveal-stagger] > [data-reveal]:nth-child(6) { transition-delay: 400ms; }
+
+/* ---- Small-screen final pass ------------------------------------- */
+@media (max-width: 575.98px) {
+    .public-hero-inner {
+        padding: 3rem 1.25rem 2.5rem;
+    }
+    .public-hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .public-hero-actions .btn {
+        width: 100%;
+        text-align: center;
+    }
+    .public-section {
+        padding: 2.5rem 1.25rem;
+    }
+    .public-section h2 {
+        font-size: 1.5rem;
+    }
+    .public-section-lead {
+        font-size: 0.95rem;
+    }
+    .public-stat-grid {
+        gap: 0.75rem;
+    }
+    .public-stat-card {
+        padding: 1.1rem;
+    }
+    .public-stat-value {
+        font-size: 1.85rem;
+    }
+    .public-chart-card {
+        padding: 1rem 1.15rem;
+    }
+    .public-chart-card h3 {
+        font-size: 0.95rem;
+    }
+    .public-footer {
+        padding: 2rem 1rem 1rem;
+    }
+    .public-footer-inner {
+        gap: 1.25rem;
+    }
+    .public-footer a {
+        padding: 0.4rem 0;
+    }
+    .public-notice {
+        padding: 0.85rem 1rem;
+        font-size: 0.85rem;
+    }
+}
