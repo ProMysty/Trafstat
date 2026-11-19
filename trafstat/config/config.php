@@ -14,7 +14,9 @@ define('DB_PASS', 'ryxXuOlooAgAazkdjhTluqfVEePNtSph');
 
 // ---- Application ----------------------------------------------------
 define('APP_ENV', 'development');                 // 'development' | 'production'
-define('APP_URL', 'http://localhost/trafstat');   // no trailing slash
+require_once __DIR__ . '/environment.php';
+define('APP_URL', detect_app_url());
+define('APP_BASE_PATH', detect_app_base_path());
 define('APP_TIMEZONE', 'Asia/Manila');
 define('APP_NAME', 'TrafStat');
 

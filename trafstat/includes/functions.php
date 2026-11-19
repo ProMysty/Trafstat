@@ -6,9 +6,12 @@
 
 function url(string $path = ''): string
 {
-    return APP_URL . '/' . ltrim($path, '/');
+    // Use the dynamically detected base path.
+    // Returns "/assets/..." on root domains (Railway)
+    // Returns "/trafstat/assets/..." on subdirectory installs (XAMPP)
+    $base = (defined('APP_BASE_PATH') && APP_BASE_PATH !== '/') ? APP_BASE_PATH : '';
+    return $base . '/' . ltrim($path, '/');
 }
-
 function redirect(string $path): void
 {
     header('Location: ' . $path);
